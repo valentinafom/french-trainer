@@ -232,7 +232,7 @@
     <div class="wrap">
         <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
             <a href="index.html" class="back-link">[Back to index]</a>
-          </div>
+        </div>
         <div class="card">
             <details id="settings">
                 <summary>Settings</summary>
@@ -806,8 +806,9 @@
             if (!currentItem) return;
             const mode = modeEl.value;
 
+            const hint = currentFormLabel ? ` (${currentFormLabel})` : "";
+
             if (mode === "promptA_to_answerB") {
-                const hint = currentFormLabel ? ` (${currentFormLabel})` : "";
 
                 bigPromptEl.textContent = getMeaning(currentItem) + hint;
                 smallPromptEl.textContent = currentFrench;
@@ -820,11 +821,11 @@
                 //  `Expected: <span class="expected">${currentFrench}</span> ` +
                 //  `[${getMeaning(currentItem)}${hint}]`;
             } else {
-                bigPromptEl.textContent = getMeaning(currentItem);
+                bigPromptEl.textContent = getMeaning(currentItem) + hint;
 
                 extraEl.innerHTML =
-                    `Expected: <span class="expected">${currentExpectedForms.join(" / ")}</span>` +
-                    ` [${currentFrench} ${hint}]`;
+                    `Expected: <span class="expected">${getMeaning(currentItem)}</span>` +
+                    ` [${currentFrench}${hint}]`;
 
 
                 //extraEl.innerHTML =
