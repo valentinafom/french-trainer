@@ -1,0 +1,149 @@
+{
+    "id": "professions",
+    "name": "Professions (nouns)",
+    "name_ru": "Профессии (существительные)",
+    "nameFr": "Les métiers",
+    "supportsForms": true,
+  
+    "rule": {
+      "source_fr": "Le féminin des noms de métiers",
+      "summary_fr": "En général, pour former le féminin, on ajoute un -e au masculin (cela peut modifier la prononciation).",
+      "summary_eng": "To form the feminine, you often add -e to the masculine form (pronunciation may change).",
+      "summary_ru": "Чтобы образовать женский род, обычно добавляют -e к мужской форме (произношение может измениться).",
+  
+     "patterns": [
+        {
+          "type": "ien_ienne",
+          "ms_ending": "-ien",
+          "fs_ending": "-ienne",
+          "example": { "ms": "un pharmacien", "fs": "une pharmacienne" },
+          "grammar_eng": "Professions ending in -ien: feminine doubles n and adds -e (-ienne); plural adds -s",
+          "grammar_ru": "Профессии на -ien: в женском роде удваивается n и добавляется -e (-ienne); во множественном числе добавляется -s"
+        },
+        {
+          "type": "er_ere",
+          "ms_ending": "-(i)er",
+          "fs_ending": "-(i)ère",
+          "example": { "ms": "un infirmier", "fs": "une infirmière" },
+          "grammar_eng": "Professions ending in -(i)er: feminine changes to -(i)ère (with grave accent); plural adds -s",
+          "grammar_ru": "Профессии на -(i)er: в женском роде меняется на -(i)ère (с grave accent è); во множественном числе добавляется -s"
+        },
+        {
+          "type": "teur_trice",
+          "ms_ending": "-teur",
+          "fs_ending": "-trice",
+          "example": { "ms": "un agriculteur", "fs": "une agricultrice" },
+          "grammar_eng": "Professions ending in -teur: feminine becomes -trice; plural adds -s",
+          "grammar_ru": "Профессии на -teur: в женском роде становится -trice; во множественном числе добавляется -s"
+        },
+        {
+          "type": "eur_euse",
+          "ms_ending": "-eur",
+          "fs_ending": "-euse",
+          "example": { "ms": "un coiffeur", "fs": "une coiffeuse" },
+          "grammar_eng": "Professions ending in -eur: feminine becomes -euse; plural adds -s",
+          "grammar_ru": "Профессии на -eur: в женском роде становится -euse; во множественном числе добавляется -s"
+        },
+        {
+          "type": "teur_teuse",
+          "ms_ending": "-teur",
+          "fs_ending": "-teuse",
+          "example": { "ms": "un chanteur", "fs": "une chanteuse" },
+          "grammar_eng": "Some professions with -teur: feminine becomes -teuse (derived from verbs); plural adds -s",
+          "grammar_ru": "Некоторые профессии на -teur: в женском роде становится -teuse (образованные от глаголов); во множественном числе добавляется -s"
+        }
+      ]
+    },
+  
+    "items": [
+      {
+        "fr": "maçon",
+        "eng": { "ms": "bricklayer", "fs": "bricklayer", "mp": "bricklayers", "fp": "bricklayers" },
+        "ru": { "ms": "каменщик", "fs": "каменщица", "mp": "каменщики", "fp": "каменщицы" },
+        "forms": { "ms": "maçon", "fs": "maçonne", "mp": "maçons", "fp": "maçonnes" },
+        "grammar_eng": "-on → -onne (double n + e); plural adds -s",
+        "grammar_ru": "-on → -onne (удваивается n и добавляется -e); множественное число — -s"
+      },
+      {
+        "fr": "homme d’affaires",
+        "eng": { "ms": "businessman", "fs": "businesswoman", "mp": "businessmen", "fp": "businesswomen" },
+        "ru": { "ms": "бизнесмен", "fs": "бизнесвумен", "mp": "бизнесмены", "fp": "бизнесвумен" },
+        "forms": { "ms": "homme d’affaires", "fs": "femme d’affaires", "mp": "hommes d’affaires", "fp": "femmes d’affaires" },
+        "grammar_eng": "Fixed expression: homme/femme d’affaires; plural adds -s to homme/femme",
+        "grammar_ru": "Устойчивое выражение: homme/femme d’affaires; во множественном числе меняется homme/femme (+ -s)"
+      },
+      {
+        "fr": "coiffeur",
+        "eng": { "ms": "hairdresser", "fs": "hairdresser", "mp": "hairdressers", "fp": "hairdressers" },
+        "ru": { "ms": "парикмахер", "fs": "парикмахерша", "mp": "парикмахеры", "fp": "парикмахерши" },
+        "forms": { "ms": "coiffeur", "fs": "coiffeuse", "mp": "coiffeurs", "fp": "coiffeuses" },
+        "grammar_eng": "-eur → -euse; plural adds -s",
+        "grammar_ru": "-eur → -euse; множественное число — -s"
+      },
+      {
+        "fr": "médecin",
+        "eng": { "ms": "doctor", "fs": "doctor", "mp": "doctors", "fp": "doctors" },
+        "ru": { "ms": "врач", "fs": "врач", "mp": "врачи", "fp": "врачи" },
+        "forms": { "ms": "médecin", "fs": "médecin", "mp": "médecins", "fp": "médecins" },
+        "grammar_eng": "Same form for masculine and feminine; plural adds -s",
+        "grammar_ru": "Форма одинакова для мужского и женского рода; множественное число — -s"
+      },
+      {
+        "fr": "avocat",
+        "eng": { "ms": "lawyer", "fs": "lawyer", "mp": "lawyers", "fp": "lawyers" },
+        "ru": { "ms": "адвокат", "fs": "адвокатка", "mp": "адвокаты", "fp": "адвокатки" },
+        "forms": { "ms": "avocat", "fs": "avocate", "mp": "avocats", "fp": "avocates" },
+        "grammar_eng": "Add -e to form feminine (avocat → avocate); plural adds -s",
+        "grammar_ru": "Женская форма: добавляется -e (avocat → avocate); множественное число — -s"
+      },
+      {
+        "fr": "acteur",
+        "eng": { "ms": "actor", "fs": "actress", "mp": "actors", "fp": "actresses" },
+        "ru": { "ms": "актёр", "fs": "актриса", "mp": "актёры", "fp": "актрисы" },
+        "forms": { "ms": "acteur", "fs": "actrice", "mp": "acteurs", "fp": "actrices" },
+        "grammar_eng": "-eur → -trice (special pattern); plural adds -s",
+        "grammar_ru": "Специальное образование: -eur → -trice; множественное число — -s"
+      },
+      {
+        "fr": "infirmier",
+        "eng": { "ms": "male nurse", "fs": "nurse", "mp": "male nurses", "fp": "nurses" },
+        "ru": { "ms": "медбрат", "fs": "медсестра", "mp": "медбратья", "fp": "медсёстры" },
+        "forms": { "ms": "infirmier", "fs": "infirmière", "mp": "infirmiers", "fp": "infirmières" },
+        "grammar_eng": "-(i)er → -(i)ère (accent grave); plural adds -s",
+        "grammar_ru": "-(i)er → -(i)ère (появляется è); множественное число — -s"
+      },
+      {
+        "fr": "pompier",
+        "eng": { "ms": "firefighter", "fs": "firefighter", "mp": "firefighters", "fp": "firefighters" },
+        "ru": { "ms": "пожарный", "fs": "пожарная", "mp": "пожарные", "fp": "пожарные" },
+        "forms": { "ms": "pompier", "fs": "pompière", "mp": "pompiers", "fp": "pompières" },
+        "grammar_eng": "-(i)er → -(i)ère (accent grave); plural adds -s",
+        "grammar_ru": "-(i)er → -(i)ère (появляется è); множественное число — -s"
+      },
+      {
+        "fr": "facteur",
+        "eng": { "ms": "postman", "fs": "postwoman", "mp": "postmen", "fp": "postwomen" },
+        "ru": { "ms": "почтальон", "fs": "почтальонка", "mp": "почтальоны", "fp": "почтальонки" },
+        "forms": { "ms": "facteur", "fs": "factrice", "mp": "facteurs", "fp": "factrices" },
+        "grammar_eng": "Irregular: facteur → factrice; plural adds -s",
+        "grammar_ru": "Нестандартно: facteur → factrice; множественное число — -s"
+      },
+      {
+        "fr": "routier",
+        "eng": { "ms": "lorry driver", "fs": "lorry driver", "mp": "lorry drivers", "fp": "lorry drivers" },
+        "ru": { "ms": "дальнобойщик", "fs": "дальнобойщица", "mp": "дальнобойщики", "fp": "дальнобойщицы" },
+        "forms": { "ms": "routier", "fs": "routière", "mp": "routiers", "fp": "routières" },
+        "grammar_eng": "-(i)er → -(i)ère (accent grave); plural adds -s",
+        "grammar_ru": "-(i)er → -(i)ère (появляется è); множественное число — -s"
+      },
+      {
+        "fr": "comptable",
+        "eng": { "ms": "accountant", "fs": "accountant", "mp": "accountants", "fp": "accountants" },
+        "ru": { "ms": "бухгалтер", "fs": "бухгалтер", "mp": "бухгалтеры", "fp": "бухгалтеры" },
+        "forms": { "ms": "comptable", "fs": "comptable", "mp": "comptables", "fp": "comptables" },
+        "grammar_eng": "Same form for masculine and feminine; plural adds -s",
+        "grammar_ru": "Форма одинакова для мужского и женского рода; множественное число — -s"
+      }
+    ]
+  }
+  

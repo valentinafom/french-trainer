@@ -1,0 +1,17 @@
+{
+    "id": "days",
+    "name": "Days of the week",
+    "name_ru": "Дни недели",
+    "nameFr": "Les jours de la semaine",
+    "supportsForms": false,
+    "items": [
+      { "a": "Monday", "a_ru": "Понедельник", "b": "lundi" },
+      { "a": "Tuesday", "a_ru": "Вторник", "b": "mardi" },
+      { "a": "Wednesday", "a_ru": "Среда", "b": "mercredi" },
+      { "a": "Thursday", "a_ru": "Четверг", "b": "jeudi" },
+      { "a": "Friday", "a_ru": "Пятница", "b": "vendredi" },
+      { "a": "Saturday", "a_ru": "Суббота", "b": "samedi" },
+      { "a": "Sunday", "a_ru": "Воскресенье", "b": "dimanche" }
+    ]
+  }
+  

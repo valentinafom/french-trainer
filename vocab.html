@@ -223,6 +223,46 @@
         .back-link:hover {
             text-decoration: underline;
         }
+
+        .rule-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  margin: 0 0 6px;
+}
+
+.rule-subtitle {
+  font-size: .9rem;
+  color: #666;
+  margin: 0 0 10px;
+}
+
+.rule-section {
+  margin-top: 12px;
+  background: var(--bg-page);
+}
+
+.rule-badge {
+  display: inline-block;
+  border: 1px solid var(--border-soft);   
+  border-radius: 999px;
+  padding: 2px 6px;
+  font-weight: 300;
+  font-size: 1.0rem;
+  color: #5F7F6E;
+  margin-left: 5px;
+}
+
+.rule-grid {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  gap: 10px 6px;
+  margin-top: 8px;
+}
+
+.rule-code {
+    color: var(--text-main);
+}
+
     </style>
 </head>
 
@@ -339,225 +379,36 @@
                 <button class="secondary" id="speakBtn" title="press (s) to Pronounce" type="button">🔊 Listen</button>
             </div>
         </div>
+
+        <div class="card" id="ruleCard" style="display:none;">
+            <details id="ruleDetails">
+              <summary id="ruleSummaryTitle">Rule</summary>
+              <div class="spacer"></div>
+              <div class="tiny" id="ruleBody"></div>
+            </details>
+          </div>
+          
     </div>
 
     <script>
+        let TOPIC_SETS = [];
 
-        const TOPIC_SETS = [
-            {
-                id: "days",
-                name: "Days of the week",
-                name_ru: "Дни недели",
-                nameFr: "Les jours de la semaine",
-                items: [
-                    { a: "Monday", a_ru: "Понедельник", b: "lundi" },
-                    { a: "Tuesday", a_ru: "Вторник", b: "mardi" },
-                    { a: "Wednesday", a_ru: "Среда", b: "mercredi" },
-                    { a: "Thursday", a_ru: "Четверг", b: "jeudi" },
-                    { a: "Friday", a_ru: "Пятница", b: "vendredi" },
-                    { a: "Saturday", a_ru: "Суббота", b: "samedi" },
-                    { a: "Sunday", a_ru: "Воскресенье", b: "dimanche" }
-                ]
-            },
-            {
-                id: "months",
-                name: "Months",
-                name_ru: "Месяцы",
-                nameFr: "Les mois",
-                items: [
-                    { a: "January", a_ru: "Январь", b: "janvier" },
-                    { a: "February", a_ru: "Февраль", b: "février" },
-                    { a: "March", a_ru: "Март", b: "mars" },
-                    { a: "April", a_ru: "Апрель", b: "avril" },
-                    { a: "May", a_ru: "Май", b: "mai" },
-                    { a: "June", a_ru: "Июнь", b: "juin" },
-                    { a: "July", a_ru: "Июль", b: "juillet" },
-                    { a: "August", a_ru: "Август", b: "août" },
-                    { a: "September", a_ru: "Сентябрь", b: "septembre" },
-                    { a: "October", a_ru: "Октябрь", b: "octobre" },
-                    { a: "November", a_ru: "Ноябрь", b: "novembre" },
-                    { a: "December", a_ru: "Декабрь", b: "décembre" }
-                ]
-            },
-            {
-                id: "colours",
-                name: "Colours (adjectives)",
-                name_ru: "Цвета (прилагательные)",
-                nameFr: "Les couleurs",
-                supportsForms: true,
-                items: [
-                    {
-                        a: "White",
-                        a_ru: "Белый",
-                        forms: { ms: "blanc", fs: "blanche", mp: "blancs", fp: "blanches" }
-                    },
-                    {
-                        a: "Black",
-                        a_ru: "Чёрный",
-                        forms: { ms: "noir", fs: "noire", mp: "noirs", fp: "noires" }
-                    },
-                    {
-                        a: "Red",
-                        a_ru: "Красный",
-                        forms: { ms: "rouge", fs: "rouge", mp: "rouges", fp: "rouges" }
-                    },
-                    {
-                        a: "Blue",
-                        a_ru: "Синий",
-                        forms: { ms: "bleu", fs: "bleue", mp: "bleus", fp: "bleues" }
-                    },
-                    {
-                        a: "Green",
-                        a_ru: "Зелёный",
-                        forms: { ms: "vert", fs: "verte", mp: "verts", fp: "vertes" }
-                    },
-                    {
-                        a: "Yellow",
-                        a_ru: "Жёлтый",
-                        forms: { ms: "jaune", fs: "jaune", mp: "jaunes", fp: "jaunes" }
-                    },
-                    {
-                        a: "Orange",
-                        a_ru: "Оранжевый",
-                        forms: {
-                            ms: ["orange"],
-                            fs: ["orange"],
-                            mp: ["orange", "oranges"],
-                            fp: ["orange", "oranges"]
-                        }
-                    }
-                    ,
-                    {
-                        a: "Pink",
-                        a_ru: "Розовый",
-                        forms: { ms: "rose", fs: "rose", mp: "roses", fp: "roses" }
-                    },
-                    {
-                        a: "Purple",
-                        a_ru: "Фиолетовый",
-                        forms: { ms: "violet", fs: "violette", mp: "violets", fp: "violettes" }
-                    },
-                    {
-                        a: "Brown",
-                        a_ru: "Коричневый",
-                        forms: {
-                            ms: ["marron"],
-                            fs: ["marron"],
-                            mp: ["marron", "marrons"],
-                            fp: ["marron", "marrons"]
-                        }
-                    },
-                    {
-                        a: "Grey",
-                        a_ru: "Серый",
-                        forms: { ms: "gris", fs: "grise", mp: "gris", fp: "grises" }
-                    },
-                    {
-                        a: "Beige",
-                        a_ru: "Бежевый",
-                        forms: { ms: "beige", fs: "beige", mp: "beiges", fp: "beiges" }
-                    },
-                    {
-                        a: "Gold",
-                        a_ru: "Золотой",
-                        forms: { ms: "doré", fs: "dorée", mp: "dorés", fp: "dorées" }
-                    },
-                    {
-                        a: "Silver",
-                        a_ru: "Серебряный",
-                        forms: { ms: "argenté", fs: "argentée", mp: "argentés", fp: "argentées" }
-                    }
-                ]
-            },
-            {
-                id: "professions",
-                name: "Professions (nouns)",
-                name_ru: "Профессии (сущуствительные)",
-                nameFr: "Les métiers",
-                supportsForms: true,
-                items: [
-                    {
-                        a: "Actor",
-                        a_ru: "Актёр",
-                        forms: { ms: "acteur", fs: "actrice", mp: "acteurs", fp: "actrices" }
-                    },
-                    {
-                        a: "Waiter",
-                        a_ru: "Официант",
-                        forms: { ms: "serveur", fs: "serveuse", mp: "serveurs", fp: "serveuses" }
-                    },
-                    {
-                        a: "Nurse",
-                        a_ru: "Медсестра",
-                        forms: { ms: "infirmier", fs: "infirmière", mp: "infirmiers", fp: "infirmières" }
-                    },
-                    {
-                        a: "Cook",
-                        a_ru: "Повар",
-                        forms: { ms: "cuisinier", fs: "cuisinière", mp: "cuisiniers", fp: "cuisinières" }
-                    },
-                    {
-                        a: "Baker",
-                        a_ru: "Пекарь",
-                        forms: { ms: "boulanger", fs: "boulangère", mp: "boulangers", fp: "boulangères" }
-                    },
-                    {
-                        a: "Hairdresser",
-                        a_ru: "Парикмахер",
-                        forms: { ms: "coiffeur", fs: "coiffeuse", mp: "coiffeurs", fp: "coiffeuses" }
-                    },
-                    {
-                        a: "Singer",
-                        a_ru: "Певец",
-                        forms: { ms: "chanteur", fs: "chanteuse", mp: "chanteurs", fp: "chanteuses" }
-                    },
-                    {
-                        a: "Dancer",
-                        a_ru: "Танцор",
-                        forms: { ms: "danseur", fs: "danseuse", mp: "danseurs", fp: "danseuses" }
-                    },
-                    {
-                        a: "Writer",
-                        a_ru: "Писатель",
-                        // two common feminine forms in real usage
-                        forms: { ms: "auteur", fs: ["auteure", "autrice"], mp: "auteurs", fp: ["auteures", "autrices"] }
-                    },
-                    {
-                        a: "Director",
-                        a_ru: "Директор",
-                        forms: { ms: "directeur", fs: "directrice", mp: "directeurs", fp: "directrices" }
-                    },
-                    {
-                        a: "Teacher",
-                        a_ru: "Учитель",
-                        forms: { ms: "professeur", fs: "professeure", mp: "professeurs", fp: "professeures" }
-                    },
-                    {
-                        a: "Student",
-                        a_ru: "Студент",
-                        forms: { ms: "étudiant", fs: "étudiante", mp: "étudiants", fp: "étudiantes" }
-                    },
-                    {
-                        a: "Engineer",
-                        a_ru: "Инженер",
-                        forms: { ms: "ingénieur", fs: "ingénieure", mp: "ingénieurs", fp: "ingénieures" }
-                    },
-                    {
-                        a: "Lawyer",
-                        a_ru: "Юрист",
-                        forms: { ms: "avocat", fs: "avocate", mp: "avocats", fp: "avocates" }
-                    },
-                    {
-                        a: "Doctor",
-                        a_ru: "Врач",
-                        // often same word; feminine commonly "docteure" in some contexts
-                        forms: { ms: "médecin", fs: ["médecin", "docteure"], mp: "médecins", fp: ["médecins", "docteures"] }
-                    }
-                ]
+        async function loadJsonSet(path) {
+            const res = await fetch(path);
+            if (!res.ok) {
+                throw new Error(`Failed to load ${path}`);
             }
+            return res.json();
+        }
 
-
-        ];
+        async function loadAllSets() {
+            TOPIC_SETS = [
+                await loadJsonSet("data/days.json"),
+                await loadJsonSet("data/months.json"),
+                await loadJsonSet("data/colours.json"),
+                await loadJsonSet("data/professions.json")
+            ];
+        }
 
 
         // Optional: change the default set here
@@ -593,6 +444,9 @@
         const strictEl = el("strict");
         const slowSpeakEl = el("slowSpeak");
         const setTitleFrEl = el("setTitleFr");
+        const ruleCardEl = el("ruleCard");
+        const ruleBodyEl = el("ruleBody");
+        const ruleSummaryTitleEl = el("ruleSummaryTitle");
 
 
 
@@ -616,6 +470,7 @@
         let correct = 0;
         let allowHotkeysInAnswer = false;
         let currentExpectedForms = [];
+        let currentFormKey = null; // "ms" | "fs" | "mp" | "fp"
 
 
         function updateLanguageUI() {
@@ -636,6 +491,84 @@
             if (lang === "ru" && set.name_ru) return set.name_ru;
             return set.name;
         }
+
+        function fmtExampleValue(v) {
+  if (Array.isArray(v)) return v.join(" / ");
+  return v ?? "";
+}
+
+function fmtExample(ex) {
+  const lang = prefLangEl.value || "en";
+  const labels = (lang === "ru") ? FORM_LABELS_RU : FORM_LABELS_EN;
+
+  return `
+    <div class="rule-grid">
+      <div><b>${labels.ms}</b></div><div class="rule-code">${fmtExampleValue(ex.ms)}</div>
+      <div><b>${labels.fs}</b></div><div class="rule-code">${fmtExampleValue(ex.fs)}</div>
+      <div><b>${labels.mp}</b></div><div class="rule-code">${fmtExampleValue(ex.mp)}</div>
+      <div><b>${labels.fp}</b></div><div class="rule-code">${fmtExampleValue(ex.fp)}</div>
+    </div>
+  `;
+}
+
+
+function renderRuleCard() {
+  const set = getActiveSet();
+  const rule = set?.rule;
+
+  if (!rule) {
+    ruleCardEl.style.display = "none";
+    ruleBodyEl.innerHTML = "";
+    return;
+  }
+
+  ruleCardEl.style.display = "";
+  const lang = prefLangEl.value || "en";
+
+  // Title + summary language
+  const title = rule.source_fr;
+
+  ruleSummaryTitleEl.textContent = rule.source_fr;
+
+  const summary =
+    (lang === "ru" && rule.summary_ru) ? rule.summary_ru :
+    (lang === "en" && rule.summary_eng) ? rule.summary_eng :
+    rule.summary_fr || rule.summary_eng || rule.summary_ru || "";
+
+    const patternLabel =
+    (lang === "ru") ? "Шаблон" : "Pattern" || "";
+
+    const exampleLabel =
+    (lang === "ru") ? "Примеры" : "Examples" || "";
+
+  const source = rule.source_fr ? `Source: <span class="rule-code">${rule.source_fr}</span>` : "";
+
+  // Patterns
+  const patternsHtml = (rule.patterns || []).map((p) => {
+    const badge = p.type ? `<span class="rule-badge">${p.type}</span>` : "";
+
+    const grammar =
+      (lang === "ru" && p.grammar_ru) ? p.grammar_ru :
+      (lang === "en" && p.grammar_eng) ? p.grammar_eng :
+      (p.grammar_eng || p.grammar_ru || "");
+
+    const examples = (p.examples || []).map(fmtExample).join("");
+
+    return `
+      <div class="rule-section">
+        <li><b>${patternLabel}:</b><span class="expected">${badge}</span></li>
+        <div class="rule-subtitle">${grammar}</div>
+        ${examples ? `<div class="tiny"><b>${exampleLabel}</b>${examples}</div>` : ""}
+      </div>
+    `;
+  }).join("");
+
+  ruleBodyEl.innerHTML = `    
+    <div class="tiny">${summary}</div>
+    <ol>${patternsHtml}</ol>
+  `;
+}
+
 
 
         function foldSettings() {
@@ -734,25 +667,33 @@
             const set = getActiveSet();
             setTitleFrEl.textContent = set.nameFr || set.name;
         }
-
-        function getMeaning(item) {
+        
+        function getMeaning(item, formKeyOverride) {
             const lang = prefLangEl.value || "en";
-
+            const form = formKeyOverride || currentFormKey || "ms";
+            // NEW schema
+            if (item && (item.eng || item.ru)) {
+                if (lang === "ru" && item.ru) return item.ru[form] ?? item.ru.ms ?? "";
+                if (lang === "en" && item.eng) return item.eng[form] ?? item.eng.ms ?? "";
+                if (item.eng) return item.eng[form] ?? item.eng.ms ?? "";
+                if (item.ru) return item.ru[form] ?? item.ru.ms ?? "";
+            }
+            // OLD schema
             if (lang === "ru" && item.a_ru) return item.a_ru;
-            return item.a; // fallback = English
+            if (item.a) return item.a;
+            return "";
         }
 
         function getPreferredLangLabel() {
             const lang = prefLangEl.value || "en";
             return LANG_LABELS[lang] || "English";
         }
+
         function getFormLabel(formKey) {
             const lang = prefLangEl.value || "en";  // <-- use the real code
             const labels = (lang === "ru") ? FORM_LABELS_RU : FORM_LABELS_EN;
             return labels?.[formKey] || "";
         }
-
-
 
         function setCard() {
             const set = getActiveSet();
@@ -764,6 +705,7 @@
             if (set.supportsForms && currentItem.forms) {
                 const enabledForms = getEnabledForms();
                 const chosenForm = pick(enabledForms);
+                currentFormKey = chosenForm;
 
                 const formValue = currentItem.forms[chosenForm]; // string OR array
 
@@ -775,7 +717,8 @@
 
                 currentFormLabel = getFormLabel(chosenForm);
             } else {
-                currentFrench = currentItem.b;
+                currentFormKey = null;
+                currentFrench = currentItem.b ?? currentItem.fr ?? "";
                 currentExpectedForms = [currentFrench];
             }
 
@@ -783,7 +726,7 @@
 
             if (mode === "promptA_to_answerB") {
                 const hint = currentFormLabel ? ` (${currentFormLabel})` : "";
-                bigPromptEl.textContent = getMeaning(currentItem) + hint;
+                bigPromptEl.textContent = getMeaning(currentItem, currentFormKey) + hint;
                 smallPromptEl.textContent = "";
                 answerEl.placeholder = "Type the French…";
             } else {
@@ -807,30 +750,24 @@
             const mode = modeEl.value;
 
             const hint = currentFormLabel ? ` (${currentFormLabel})` : "";
+            bigPromptEl.textContent = getMeaning(currentItem, currentFormKey) + hint;
+
 
             if (mode === "promptA_to_answerB") {
 
-                bigPromptEl.textContent = getMeaning(currentItem) + hint;
                 smallPromptEl.textContent = currentFrench;
 
                 extraEl.innerHTML =
                     `Expected: <span class="expected">${currentExpectedForms.join(" / ")}</span>` +
-                    ` [${getMeaning(currentItem)}${hint}]`;
+                    ` [${getMeaning(currentItem, currentFormKey)}${hint}]`;
 
                 //extraEl.innerHTML =
                 //  `Expected: <span class="expected">${currentFrench}</span> ` +
                 //  `[${getMeaning(currentItem)}${hint}]`;
-            } else {
-                bigPromptEl.textContent = getMeaning(currentItem) + hint;
-
+            } else {                
                 extraEl.innerHTML =
-                    `Expected: <span class="expected">${getMeaning(currentItem)}</span>` +
+                    `Expected: <span class="expected">${getMeaning(currentItem, currentFormKey)}</span>` +
                     ` [${currentFrench}${hint}]`;
-
-
-                //extraEl.innerHTML =
-                //  `Expected: <span class="expected">${getMeaning(currentItem)}</span> ` +
-                //  `[${currentFrench}]`;
             }
         }
 
@@ -919,12 +856,14 @@
             initTopicDropdown();
             updateLanguageUI();
             updateSetTitle();
+            renderRuleCard();
             setCard(); // refresh prompt text if your card uses preferred language
         });
         topicSetEl.addEventListener("change", () => {
             saveTopicSelection();
             applyFormsUIForSet(getActiveSet());
             updateSetTitle();
+            renderRuleCard();
             setCard();
         });
 
@@ -1010,14 +949,20 @@
 
 
         window.speechSynthesis?.getVoices?.();
-        loadPreferredLanguage();
-        initTopicDropdown();
-        loadTopicSelection();
-        updateLanguageUI();
-        applyFormsUIForSet(getActiveSet());
-        updateSetTitle();
-        setCard();
-        updateScore();
+        (async function initApp() {
+                loadPreferredLanguage();
+
+                await loadAllSets();
+
+                initTopicDropdown();
+                loadTopicSelection();
+                updateLanguageUI();
+                applyFormsUIForSet(getActiveSet());
+                updateSetTitle();
+                renderRuleCard();
+                setCard();
+                updateScore();
+            })();
     </script>
 </body>
 

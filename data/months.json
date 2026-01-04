@@ -1,0 +1,22 @@
+{
+    "id": "months",
+    "name": "Months",
+    "name_ru": "Месяцы",
+    "nameFr": "Les mois",
+    "supportsForms": false,
+    "items": [
+      { "a": "January", "a_ru": "Январь", "b": "janvier" },
+      { "a": "February", "a_ru": "Февраль", "b": "février" },
+      { "a": "March", "a_ru": "Март", "b": "mars" },
+      { "a": "April", "a_ru": "Апрель", "b": "avril" },
+      { "a": "May", "a_ru": "Май", "b": "mai" },
+      { "a": "June", "a_ru": "Июнь", "b": "juin" },
+      { "a": "July", "a_ru": "Июль", "b": "juillet" },
+      { "a": "August", "a_ru": "Август", "b": "août" },
+      { "a": "September", "a_ru": "Сентябрь", "b": "septembre" },
+      { "a": "October", "a_ru": "Октябрь", "b": "octobre" },
+      { "a": "November", "a_ru": "Ноябрь", "b": "novembre" },
+      { "a": "December", "a_ru": "Декабрь", "b": "décembre" }
+    ]
+  }
+  

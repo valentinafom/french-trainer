@@ -1,0 +1,164 @@
+{
+    "id": "colours",
+    "name": "Colours (adjectives)",
+    "name_ru": "Цвета (прилагательные)",
+    "nameFr": "Les couleurs",
+    "supportsForms": true,
+  
+    "rule": {
+      "source_fr": "L’accord des adjectifs de couleur",
+      "summary_fr": "Les adjectifs de couleur s’accordent en genre et en nombre avec le nom (masc./fém., sing./plur.).",
+      "summary_eng": "Colour adjectives agree in gender and number with the noun (masc./fem., sing./pl.).",
+      "summary_ru": "Прилагательные цвета согласуются с существительным в роде и числе (м./ж., ед./мн.).",
+  
+      "patterns": [
+        {
+          "type": "regular",
+          "grammar_eng": "Regular: feminine adds -e; plural adds -s",
+          "grammar_ru": "Обычные: в женском роде добавляется -e; во множественном числе добавляется -s",
+          "examples": [{ "ms": "noir", "fs": "noire", "mp": "noirs", "fp": "noires" }]
+        },
+        {
+          "type": "same_form_ms_fs",
+          "grammar_eng": "Identical masculine and feminine forms; plural adds -s",
+          "grammar_ru": "Мужской и женский род одинаковые; во множественном числе добавляется -s",
+          "examples": [{ "ms": "rouge", "fs": "rouge", "mp": "rouges", "fp": "rouges" }]
+        },
+        {
+          "type": "invariable_or_optional_plural",
+          "grammar_eng": "Invariable colour adjectives; plural -s is optional in informal usage",
+          "grammar_ru": "Неизменяемые цвета (не меняются по родам и числам); -s во множественном числе иногда добавляют в разговорной речи",
+          "examples": [
+            { "ms": "orange", "fs": "orange", "mp": ["orange", "oranges"], "fp": ["orange", "oranges"] },
+            { "ms": "marron", "fs": "marron", "mp": ["marron", "marrons"], "fp": ["marron", "marrons"] }
+            ]
+        }
+        ]
+    },
+  
+    "items": [
+      {
+        "fr": "blanc",
+        "eng": { "ms": "white", "fs": "white", "mp": "white", "fp": "white" },
+        "ru": { "ms": "белый", "fs": "белая", "mp": "белые", "fp": "белые" },
+        "forms": { "ms": "blanc", "fs": "blanche", "mp": "blancs", "fp": "blanches" },
+        "grammar_eng": "Irregular feminine: blanc → blanche; plural: add -s (blancs / blanches)",
+        "grammar_ru": "Нестандартный женский род: blanc → blanche; мн.ч.: +s (blancs / blanches)"
+      },
+      {
+        "fr": "noir",
+        "eng": { "ms": "black", "fs": "black", "mp": "black", "fp": "black" },
+        "ru": { "ms": "чёрный", "fs": "чёрная", "mp": "чёрные", "fp": "чёрные" },
+        "forms": { "ms": "noir", "fs": "noire", "mp": "noirs", "fp": "noires" },
+        "grammar_eng": "Feminine: add -e (noir → noire); plural: add -s (noirs / noires)",
+        "grammar_ru": "Женский род: +e (noir → noire); мн.ч.: +s (noirs / noires)"
+      },
+      {
+        "fr": "rouge",
+        "eng": { "ms": "red", "fs": "red", "mp": "red", "fp": "red" },
+        "ru": { "ms": "красный", "fs": "красная", "mp": "красные", "fp": "красные" },
+        "forms": { "ms": "rouge", "fs": "rouge", "mp": "rouges", "fp": "rouges" },
+        "grammar_eng": "Same in ms/fs (rouge); plural: add -s (rouges)",
+        "grammar_ru": "Одинаково в м./ж. роде (rouge); мн.ч.: +s (rouges)"
+      },
+      {
+        "fr": "bleu",
+        "eng": { "ms": "blue", "fs": "blue", "mp": "blue", "fp": "blue" },
+        "ru": { "ms": "синий", "fs": "синяя", "mp": "синие", "fp": "синие" },
+        "forms": { "ms": "bleu", "fs": "bleue", "mp": "bleus", "fp": "bleues" },
+        "grammar_eng": "Feminine: add -e (bleu → bleue); plural: add -s (bleus / bleues)",
+        "grammar_ru": "Женский род: +e (bleu → bleue); мн.ч.: +s (bleus / bleues)"
+      },
+      {
+        "fr": "vert",
+        "eng": { "ms": "green", "fs": "green", "mp": "green", "fp": "green" },
+        "ru": { "ms": "зелёный", "fs": "зелёная", "mp": "зелёные", "fp": "зелёные" },
+        "forms": { "ms": "vert", "fs": "verte", "mp": "verts", "fp": "vertes" },
+        "grammar_eng": "Feminine: add -e (vert → verte); plural: add -s (verts / vertes)",
+        "grammar_ru": "Женский род: +e (vert → verte); мн.ч.: +s (verts / vertes)"
+      },
+      {
+        "fr": "jaune",
+        "eng": { "ms": "yellow", "fs": "yellow", "mp": "yellow", "fp": "yellow" },
+        "ru": { "ms": "жёлтый", "fs": "жёлтая", "mp": "жёлтые", "fp": "жёлтые" },
+        "forms": { "ms": "jaune", "fs": "jaune", "mp": "jaunes", "fp": "jaunes" },
+        "grammar_eng": "Same in ms/fs (jaune); plural: add -s (jaunes)",
+        "grammar_ru": "Одинаково в м./ж. роде (jaune); мн.ч.: +s (jaunes)"
+      },
+      {
+        "fr": "orange",
+        "eng": { "ms": "orange", "fs": "orange", "mp": "orange", "fp": "orange" },
+        "ru": { "ms": "оранжевый", "fs": "оранжевая", "mp": "оранжевые", "fp": "оранжевые" },
+        "forms": {
+          "ms": ["orange"],
+          "fs": ["orange"],
+          "mp": ["orange", "oranges"],
+          "fp": ["orange", "oranges"]
+        },
+        "grammar_eng": "Usually invariable for colour (orange). In practice some writing also uses plural -s (oranges), especially when clearly meaning ‘orange-coloured’ (not the fruit).",
+        "grammar_ru": "Для цвета обычно неизменяемое: orange. Иногда во мн.ч. пишут -s (oranges), особенно когда явно речь о цвете (а не о фрукте)."
+      },
+      {
+        "fr": "rose",
+        "eng": { "ms": "pink", "fs": "pink", "mp": "pink", "fp": "pink" },
+        "ru": { "ms": "розовый", "fs": "розовая", "mp": "розовые", "fp": "розовые" },
+        "forms": { "ms": "rose", "fs": "rose", "mp": "roses", "fp": "roses" },
+        "grammar_eng": "Same in ms/fs (rose); plural: add -s (roses)",
+        "grammar_ru": "Одинаково в м./ж. роде (rose); мн.ч.: +s (roses)"
+      },
+      {
+        "fr": "violet",
+        "eng": { "ms": "purple", "fs": "purple", "mp": "purple", "fp": "purple" },
+        "ru": { "ms": "фиолетовый", "fs": "фиолетовая", "mp": "фиолетовые", "fp": "фиолетовые" },
+        "forms": { "ms": "violet", "fs": "violette", "mp": "violets", "fp": "violettes" },
+        "grammar_eng": "Feminine: add -te (violet → violette); plural: add -s (violets / violettes)",
+        "grammar_ru": "Женский род: добавляется -te (violet → violette); мн.ч.: +s (violets / violettes)"
+      },
+      {
+        "fr": "marron",
+        "eng": { "ms": "brown", "fs": "brown", "mp": "brown", "fp": "brown" },
+        "ru": { "ms": "коричневый", "fs": "коричневая", "mp": "коричневые", "fp": "коричневые" },
+        "forms": {
+          "ms": ["marron"],
+          "fs": ["marron"],
+          "mp": ["marron", "marrons"],
+          "fp": ["marron", "marrons"]
+        },
+        "grammar_eng": "Usually invariable for colour (marron). A plural -s (marrons) is sometimes used in writing; safest/common for colour is invariable marron.",
+        "grammar_ru": "Для цвета обычно неизменяемое: marron. В письме иногда встречается мн.ч. с -s (marrons), но самый безопасный/частый вариант для цвета — неизменяемый marron."
+      },
+      {
+        "fr": "gris",
+        "eng": { "ms": "grey", "fs": "grey", "mp": "grey", "fp": "grey" },
+        "ru": { "ms": "серый", "fs": "серая", "mp": "серые", "fp": "серые" },
+        "forms": { "ms": "gris", "fs": "grise", "mp": "gris", "fp": "grises" },
+        "grammar_eng": "Feminine: add -e (gris → grise); plural: masculine stays gris (no -s), feminine plural adds -s (grises)",
+        "grammar_ru": "Женский род: +e (gris → grise); мн.ч.: м.р. остаётся gris (без -s), ж.р. мн.ч. +s (grises)"
+      },
+      {
+        "fr": "beige",
+        "eng": { "ms": "beige", "fs": "beige", "mp": "beige", "fp": "beige" },
+        "ru": { "ms": "бежевый", "fs": "бежевая", "mp": "бежевые", "fp": "бежевые" },
+        "forms": { "ms": "beige", "fs": "beige", "mp": "beiges", "fp": "beiges" },
+        "grammar_eng": "Same in ms/fs (beige); plural: add -s (beiges)",
+        "grammar_ru": "Одинаково в м./ж. роде (beige); мн.ч.: +s (beiges)"
+      },
+      {
+        "fr": "doré",
+        "eng": { "ms": "golden", "fs": "golden", "mp": "golden", "fp": "golden" },
+        "ru": { "ms": "золотой", "fs": "золотая", "mp": "золотые", "fp": "золотые" },
+        "forms": { "ms": "doré", "fs": "dorée", "mp": "dorés", "fp": "dorées" },
+        "grammar_eng": "Feminine: add -e (doré → dorée); plural: add -s (dorés / dorées)",
+        "grammar_ru": "Женский род: +e (doré → dorée); мн.ч.: +s (dorés / dorées)"
+      },
+      {
+        "fr": "argenté",
+        "eng": { "ms": "silver", "fs": "silver", "mp": "silver", "fp": "silver" },
+        "ru": { "ms": "серебряный", "fs": "серебряная", "mp": "серебряные", "fp": "серебряные" },
+        "forms": { "ms": "argenté", "fs": "argentée", "mp": "argentés", "fp": "argentées" },
+        "grammar_eng": "Feminine: add -e (argenté → argentée); plural: add -s (argentés / argentées)",
+        "grammar_ru": "Женский род: +e (argenté → argentée); мн.ч.: +s (argentés / argentées)"
+      }
+    ]
+  }
+  
