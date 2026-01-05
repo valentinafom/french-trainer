@@ -44,6 +44,70 @@ https://valentinafom.github.io/french-trainer/
 
 ---
 
+## Verbs Trainer (Present Tense)
+
+A browser-based trainer for practising **French verbs in the present tense**, designed to support both **active recall** and **guided study**.
+
+### Features
+
+- Practice modes:
+  - **Forms** – conjugate verbs by pronoun (present tense)
+  - **English → French** – translate meaning into infinitive
+  - **French → English** – translate infinitive into meaning
+- Verb group filters:
+  - **-ER**, **-IR**, **-RE**, **Irregular**
+  - If no group is selected, all verb groups are included
+- Optional **verb selector** (practice a specific verb only)
+- Built-in **grammar rules card** (shown in Forms mode)
+- **Personalised grammar notes per verb**, including:
+  - Irregular verb warnings
+  - Spelling changes (*manger → mangeons*, *commencer → commençons*, etc.)
+  - Elision notes (*je → j’*)
+- Pronunciation using browser speech synthesis (with slow mode)
+- Strict / relaxed spelling comparison
+- Score tracking with reset option
+
+---
+
+### Study Mode
+
+When **Study mode** is enabled:
+
+- Answers are **automatically revealed** when a new card is shown
+- The **Reveal** button is disabled (greyed out)
+- No correctness feedback (✓ / ✖) is shown
+- Designed for **reading, pattern recognition, and memorisation**, not testing
+
+When **Study mode** is disabled:
+
+- Answers must be typed and checked manually
+- Feedback is shown after each attempt
+- Reveal can be used on demand
+
+---
+
+### Current vs Previous Card Information
+
+The interface intentionally separates information into:
+
+- **Current card**  
+  Shows the revealed answer and grammar notes for the *current* verb.
+
+- **Previous card**  
+  Shows feedback and information from the *last completed card*.
+
+**Important design choice (expected behaviour):**
+
+- When **Reveal is used** (or Study mode auto-reveals),  
+  the *previous card information is cleared*.
+- This avoids mixing feedback-driven testing with study-style revealing.
+- Previous card information is only preserved when progressing normally  
+  via **Check / Next** in testing mode.
+
+This behaviour is intentional and helps keep the learning context clear.
+
+---
+
 ## Keyboard Shortcuts
 
 | Key | Action |
@@ -60,10 +124,7 @@ https://valentinafom.github.io/french-trainer/
 
 The app can be used **completely offline**.
 
-1. Download the following files:
-   - `index.html`
-   - `french-numbers.html`
-   - `vocab.html`
+1. Download project files:   
 2. Open `index.html` in any modern browser (desktop or mobile).
 3. No installation, build step, or server is required.
 

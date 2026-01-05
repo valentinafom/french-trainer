@@ -1,0 +1,1135 @@
+{
+  "id": "regular_verbs",
+  "name": "Regular verbs",
+  "name_ru": "Правильные глаголы",
+  "nameFr": "Verbes réguliers",
+  "supportsForms": true,
+  "rule": {
+    "source_fr": "Conjugaison – verbes réguliers",
+    "summary_fr": "Chaque verbe contient des formes par temps (ex: présent), pour permettre l’entraînement par temps et par groupe.",
+    "summary_eng": "Each verb stores forms by tense (e.g., present) to allow training by tense and by group.",
+    "summary_ru": "Каждый глагол хранит формы по временам (например, présent), чтобы тренироваться по времени и по группе.",
+    "patterns": [
+      {
+        "type": "er_endings",
+        "group": "er",
+        "endings": {
+          "present": {
+            "je": "-e",
+            "tu": "-es",
+            "il/elle/on": "-e",
+            "nous": "-ons",
+            "vous": "-ez",
+            "ils/elles": "-ent"
+          }
+        },
+        "example": {
+          "infinitive": "parler",
+          "stem": "parl",
+          "forms": {
+            "present": {
+              "je": "parle",
+              "tu": "parles",
+              "il": "parle",
+              "elle": "parle",
+              "on": "parle",
+              "nous": "parlons",
+              "vous": "parlez",
+              "ils": "parlent",
+              "elles": "parlent"
+            }
+          }
+        },
+        "grammar": {
+          "present": {
+            "grammar_eng": "Regular -ER verbs: stem = infinitive minus -er; add the present endings. Note: je → j’ before a vowel or mute h (e.g., j’aime).",
+            "grammar_ru": "Правильные -ER: основа = инфинитив без -er; добавляем окончания настоящего времени. Примечание: je → j’ перед гласной или немой h (например, j’aime)."
+          }
+        }
+      },
+      {
+        "type": "ir_endings",
+        "group": "ir",
+        "endings": {
+          "present": {
+            "je": "-is",
+            "tu": "-is",
+            "il/elle/on": "-it",
+            "nous": "-issons",
+            "vous": "-issez",
+            "ils/elles": "-issent"
+          }
+        },
+        "example": {
+          "infinitive": "finir",
+          "stem": "fin",
+          "forms": {
+            "present": {
+              "je": "finis",
+              "tu": "finis",
+              "il": "finit",
+              "elle": "finit",
+              "on": "finit",
+              "nous": "finissons",
+              "vous": "finissez",
+              "ils": "finissent",
+              "elles": "finissent"
+            }
+          }
+        },
+        "grammar": {
+          "present": {
+            "grammar_eng": "Regular -IR (finir-type) verbs: stem = infinitive minus -ir; add present endings (-is, -is, -it, -issons, -issez, -issent).",
+            "grammar_ru": "Правильные -IR (тип finir): основа = инфинитив без -ir; добавляем окончания настоящего времени (-is, -is, -it, -issons, -issez, -issent)."
+          }
+        }
+      },
+      {
+        "type": "re_endings",
+        "group": "re",
+        "endings": {
+          "present": {
+            "je": "-s",
+            "tu": "-s",
+            "il/elle/on": "no ending",
+            "nous": "-ons",
+            "vous": "-ez",
+            "ils/elles": "-ent"
+          }
+        },
+        "example": {
+          "infinitive": "vendre",
+          "stem": "vend",
+          "forms": {
+            "present": {
+              "je": "vends",
+              "tu": "vends",
+              "il": "vend",
+              "elle": "vend",
+              "on": "vend",
+              "nous": "vendons",
+              "vous": "vendez",
+              "ils": "vendent",
+              "elles": "vendent"
+            }
+          }
+        },
+        "grammar": {
+          "present": {
+            "grammar_eng": "Regular -RE (vendre-type) verbs: stem = infinitive minus -re; present endings are -s, -s, (no ending), -ons, -ez, -ent.",
+            "grammar_ru": "Правильные -RE (тип vendre): основа = инфинитив без -re; окончания настоящего времени: -s, -s, (без окончания), -ons, -ez, -ent."
+          }
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "infinitive": "acheter",
+      "meaning": {
+        "en": "to buy",
+        "ru": "покупать"
+      },
+      "stem": "achet",
+      "group": "er",
+      "pronouns": {
+        "present": {
+          "je": "j’"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Spelling note: the stem often changes with è in the singular and 3rd person plural (j’achète), but stays 'achet-' in nous/vous (nous achetons, vous achetez).",
+          "grammar_ru": "Орфография: основа часто меняется на è в единственном числе и 3-м лице мн.ч. (j’achète), но остаётся 'achet-' в nous/vous (nous achetons, vous achetez)."
+        }
+      },
+      "forms": {
+        "present": {
+          "je": "achète",
+          "tu": "achètes",
+          "il": "achète",
+          "elle": "achète",
+          "nous": "achetons",
+          "vous": "achetez",
+          "ils": "achètent",
+          "elles": "achètent"
+        }
+      }
+    },
+    {
+      "infinitive": "adorer",
+      "meaning": {
+        "en": "to adore",
+        "ru": "обожать"
+      },
+      "stem": "ador",
+      "group": "er",
+      "pronouns": {
+        "present": {
+          "je": "j’"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Before a vowel or mute h, je contracts to j’. Example: j’adore.",
+          "grammar_ru": "Перед гласной или немой h je сокращается до j’. Пример: j’adore."
+        }
+      },
+      "forms": {
+        "present": {
+          "je": "adore",
+          "tu": "adores",
+          "il": "adore",
+          "elle": "adore",
+          "nous": "adorons",
+          "vous": "adorez",
+          "ils": "adorent",
+          "elles": "adorent"
+        }
+      }
+    },
+    {
+      "infinitive": "aimer",
+      "meaning": {
+        "en": "to like / love",
+        "ru": "любить, нравиться"
+      },
+      "stem": "aim",
+      "group": "er",
+      "pronouns": {
+        "present": {
+          "je": "j’"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Before a vowel or mute h, je contracts to j’. The verb form already includes the apostrophe: j’aime.",
+          "grammar_ru": "Перед гласной или немой h je сокращается до j’. Форма глагола уже включает апостроф: j’aime."
+        }
+      },
+      "forms": {
+        "present": {
+          "je": "aime",
+          "tu": "aimes",
+          "il": "aime",
+          "elle": "aime",
+          "nous": "aimons",
+          "vous": "aimez",
+          "ils": "aiment",
+          "elles": "aiment"
+        }
+      }
+    },
+    {
+      "infinitive": "aller",
+      "meaning": {
+        "en": "to go",
+        "ru": "идти, ехать"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "vais",
+          "tu": "vas",
+          "il": "va",
+          "elle": "va",
+          "nous": "allons",
+          "vous": "allez",
+          "ils": "vont",
+          "elles": "vont"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "attendre",
+      "meaning": {
+        "en": "to wait",
+        "ru": "ждать"
+      },
+      "stem": "attend",
+      "group": "re",
+      "forms": {
+        "present": {
+          "je": "attends",
+          "tu": "attends",
+          "il": "attend",
+          "elle": "attend",
+          "nous": "attendons",
+          "vous": "attendez",
+          "ils": "attendent",
+          "elles": "attendent"
+        }
+      }
+    },
+    {
+      "infinitive": "avoir",
+      "meaning": {
+        "en": "to have",
+        "ru": "иметь"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "ai",
+          "tu": "as",
+          "il": "a",
+          "elle": "a",
+          "nous": "avons",
+          "vous": "avez",
+          "ils": "ont",
+          "elles": "ont"
+        }
+      },
+      "pronouns": {
+        "present": {
+          "je": "j’"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb. Also, je contracts to j’ before a vowel or mute h (e.g., j’ai).",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол. Также je сокращается до j’ перед гласной или немой h (например, j’ai)."
+        }
+      }
+    },
+    {
+      "infinitive": "boire",
+      "meaning": {
+        "en": "to drink",
+        "ru": "пить"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "bois",
+          "tu": "bois",
+          "il": "boit",
+          "elle": "boit",
+          "nous": "buvons",
+          "vous": "buvez",
+          "ils": "boivent",
+          "elles": "boivent"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "choisir",
+      "meaning": {
+        "en": "to choose",
+        "ru": "выбирать"
+      },
+      "stem": "chois",
+      "group": "ir",
+      "forms": {
+        "present": {
+          "je": "choisis",
+          "tu": "choisis",
+          "il": "choisit",
+          "elle": "choisit",
+          "nous": "choisissons",
+          "vous": "choisissez",
+          "ils": "choisissent",
+          "elles": "choisissent"
+        }
+      }
+    },
+    {
+      "infinitive": "commencer",
+      "meaning": {
+        "en": "to begin / start",
+        "ru": "начинать"
+      },
+      "stem": "commenc",
+      "group": "er",
+      "grammar": {
+        "present": {
+          "grammar_eng": "Spelling note: to keep the soft 'c' sound before 'o', we use ç in the nous form: nous commençons.",
+          "grammar_ru": "Орфография: чтобы сохранить мягкий звук 'c' перед 'o', в форме nous пишется ç: nous commençons."
+        }
+      },
+      "forms": {
+        "present": {
+          "je": "commence",
+          "tu": "commences",
+          "il": "commence",
+          "elle": "commence",
+          "nous": "commençons",
+          "vous": "commencez",
+          "ils": "commencent",
+          "elles": "commencent"
+        }
+      }
+    },
+    {
+      "infinitive": "connaître",
+      "meaning": {
+        "en": "to know (a person/place)",
+        "ru": "знать (человека/место)"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "connais",
+          "tu": "connais",
+          "il": "connaît",
+          "elle": "connaît",
+          "nous": "connaissons",
+          "vous": "connaissez",
+          "ils": "connaissent",
+          "elles": "connaissent"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "croire",
+      "meaning": {
+        "en": "to believe",
+        "ru": "верить"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "crois",
+          "tu": "crois",
+          "il": "croit",
+          "elle": "croit",
+          "nous": "croyons",
+          "vous": "croyez",
+          "ils": "croient",
+          "elles": "croient"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "devoir",
+      "meaning": {
+        "en": "to have to / must",
+        "ru": "долженствовать"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "dois",
+          "tu": "dois",
+          "il": "doit",
+          "elle": "doit",
+          "nous": "devons",
+          "vous": "devez",
+          "ils": "doivent",
+          "elles": "doivent"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "dire",
+      "meaning": {
+        "en": "to say / tell",
+        "ru": "говорить, сказать"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "dis",
+          "tu": "dis",
+          "il": "dit",
+          "elle": "dit",
+          "nous": "disons",
+          "vous": "dites",
+          "ils": "disent",
+          "elles": "disent"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "dormir",
+      "meaning": {
+        "en": "to sleep",
+        "ru": "спать"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "dors",
+          "tu": "dors",
+          "il": "dort",
+          "elle": "dort",
+          "nous": "dormons",
+          "vous": "dormez",
+          "ils": "dorment",
+          "elles": "dorment"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "détester",
+      "meaning": {
+        "en": "to hate / dislike",
+        "ru": "ненавидеть"
+      },
+      "stem": "détest",
+      "group": "er",
+      "forms": {
+        "present": {
+          "je": "déteste",
+          "tu": "détestes",
+          "il": "déteste",
+          "elle": "déteste",
+          "nous": "détestons",
+          "vous": "détestez",
+          "ils": "détestent",
+          "elles": "détestent"
+        }
+      }
+    },
+    {
+      "infinitive": "faire",
+      "meaning": {
+        "en": "to do / make",
+        "ru": "делать"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "fais",
+          "tu": "fais",
+          "il": "fait",
+          "elle": "fait",
+          "nous": "faisons",
+          "vous": "faites",
+          "ils": "font",
+          "elles": "font"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "finir",
+      "meaning": {
+        "en": "to finish",
+        "ru": "заканчивать"
+      },
+      "stem": "fin",
+      "group": "ir",
+      "forms": {
+        "present": {
+          "je": "finis",
+          "tu": "finis",
+          "il": "finit",
+          "elle": "finit",
+          "nous": "finissons",
+          "vous": "finissez",
+          "ils": "finissent",
+          "elles": "finissent"
+        }
+      }
+    },
+    {
+      "infinitive": "grandir",
+      "meaning": {
+        "en": "to grow",
+        "ru": "расти"
+      },
+      "stem": "grand",
+      "group": "ir",
+      "forms": {
+        "present": {
+          "je": "grandis",
+          "tu": "grandis",
+          "il": "grandit",
+          "elle": "grandit",
+          "nous": "grandissons",
+          "vous": "grandissez",
+          "ils": "grandissent",
+          "elles": "grandissent"
+        }
+      }
+    },
+    {
+      "infinitive": "jouer",
+      "meaning": {
+        "en": "to play",
+        "ru": "играть"
+      },
+      "stem": "jou",
+      "group": "er",
+      "forms": {
+        "present": {
+          "je": "joue",
+          "tu": "joues",
+          "il": "joue",
+          "elle": "joue",
+          "nous": "jouons",
+          "vous": "jouez",
+          "ils": "jouent",
+          "elles": "jouent"
+        }
+      }
+    },
+    {
+      "infinitive": "lire",
+      "meaning": {
+        "en": "to read",
+        "ru": "читать"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "lis",
+          "tu": "lis",
+          "il": "lit",
+          "elle": "lit",
+          "nous": "lisons",
+          "vous": "lisez",
+          "ils": "lisent",
+          "elles": "lisent"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "manger",
+      "meaning": {
+        "en": "to eat",
+        "ru": "есть"
+      },
+      "stem": "mang",
+      "group": "er",
+      "grammar": {
+        "present": {
+          "grammar_eng": "Spelling note: to keep the soft 'g' sound, we add 'e' in the nous form: nous mangeons.",
+          "grammar_ru": "Орфография: чтобы сохранить мягкий звук 'g', в форме nous добавляется 'e': nous mangeons."
+        }
+      },
+      "forms": {
+        "present": {
+          "je": "mange",
+          "tu": "manges",
+          "il": "mange",
+          "elle": "mange",
+          "nous": "mangeons",
+          "vous": "mangez",
+          "ils": "mangent",
+          "elles": "mangent"
+        }
+      }
+    },
+    {
+      "infinitive": "parler",
+      "meaning": {
+        "en": "to speak",
+        "ru": "говорить"
+      },
+      "stem": "parl",
+      "group": "er",
+      "forms": {
+        "present": {
+          "je": "parle",
+          "tu": "parles",
+          "il": "parle",
+          "elle": "parle",
+          "nous": "parlons",
+          "vous": "parlez",
+          "ils": "parlent",
+          "elles": "parlent"
+        }
+      }
+    },
+    {
+      "infinitive": "partir",
+      "meaning": {
+        "en": "to leave",
+        "ru": "уезжать, уходить"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "pars",
+          "tu": "pars",
+          "il": "part",
+          "elle": "part",
+          "nous": "partons",
+          "vous": "partez",
+          "ils": "partent",
+          "elles": "partent"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "perdre",
+      "meaning": {
+        "en": "to lose",
+        "ru": "терять"
+      },
+      "stem": "perd",
+      "group": "re",
+      "forms": {
+        "present": {
+          "je": "perds",
+          "tu": "perds",
+          "il": "perd",
+          "elle": "perd",
+          "nous": "perdons",
+          "vous": "perdez",
+          "ils": "perdent",
+          "elles": "perdent"
+        }
+      }
+    },
+    {
+      "infinitive": "pouvoir",
+      "meaning": {
+        "en": "to be able to / can",
+        "ru": "мочь"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "peux",
+          "tu": "peux",
+          "il": "peut",
+          "elle": "peut",
+          "nous": "pouvons",
+          "vous": "pouvez",
+          "ils": "peuvent",
+          "elles": "peuvent"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "prendre",
+      "meaning": {
+        "en": "to take",
+        "ru": "брать"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "prends",
+          "tu": "prends",
+          "il": "prend",
+          "elle": "prend",
+          "nous": "prenons",
+          "vous": "prenez",
+          "ils": "prennent",
+          "elles": "prennent"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "préférer",
+      "meaning": {
+        "en": "to prefer",
+        "ru": "предпочитать"
+      },
+      "stem": "préfér",
+      "group": "er",
+      "grammar": {
+        "present": {
+          "grammar_eng": "Spelling note: the accent often changes in the singular and 3rd person plural (je préfère), but stays in nous/vous (nous préférons, vous préférez).",
+          "grammar_ru": "Орфография: ударение часто меняется в единственном числе и 3-м лице мн.ч. (je préfère), но сохраняется в nous/vous (nous préférons, vous préférez)."
+        }
+      },
+      "forms": {
+        "present": {
+          "je": "préfère",
+          "tu": "préfères",
+          "il": "préfère",
+          "elle": "préfère",
+          "nous": "préférons",
+          "vous": "préférez",
+          "ils": "préfèrent",
+          "elles": "préfèrent"
+        }
+      }
+    },
+    {
+      "infinitive": "regarder",
+      "meaning": {
+        "en": "to watch / look at",
+        "ru": "смотреть, глядеть"
+      },
+      "stem": "regard",
+      "group": "er",
+      "forms": {
+        "present": {
+          "je": "regarde",
+          "tu": "regardes",
+          "il": "regarde",
+          "elle": "regarde",
+          "nous": "regardons",
+          "vous": "regardez",
+          "ils": "regardent",
+          "elles": "regardent"
+        }
+      }
+    },
+    {
+      "infinitive": "répondre",
+      "meaning": {
+        "en": "to answer",
+        "ru": "отвечать"
+      },
+      "stem": "répond",
+      "group": "re",
+      "forms": {
+        "present": {
+          "je": "réponds",
+          "tu": "réponds",
+          "il": "répond",
+          "elle": "répond",
+          "nous": "répondons",
+          "vous": "répondez",
+          "ils": "répondent",
+          "elles": "répondent"
+        }
+      }
+    },
+    {
+      "infinitive": "réussir",
+      "meaning": {
+        "en": "to succeed",
+        "ru": "преуспевать, добиваться успеха"
+      },
+      "stem": "réuss",
+      "group": "ir",
+      "forms": {
+        "present": {
+          "je": "réussis",
+          "tu": "réussis",
+          "il": "réussit",
+          "elle": "réussit",
+          "nous": "réussissons",
+          "vous": "réussissez",
+          "ils": "réussissent",
+          "elles": "réussissent"
+        }
+      }
+    },
+    {
+      "infinitive": "savoir",
+      "meaning": {
+        "en": "to know (a fact)",
+        "ru": "знать (факт)"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "sais",
+          "tu": "sais",
+          "il": "sait",
+          "elle": "sait",
+          "nous": "savons",
+          "vous": "savez",
+          "ils": "savent",
+          "elles": "savent"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "sortir",
+      "meaning": {
+        "en": "to go out / take out",
+        "ru": "выходить, выносить"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "sors",
+          "tu": "sors",
+          "il": "sort",
+          "elle": "sort",
+          "nous": "sortons",
+          "vous": "sortez",
+          "ils": "sortent",
+          "elles": "sortent"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "travailler",
+      "meaning": {
+        "en": "to work",
+        "ru": "работать"
+      },
+      "stem": "travaill",
+      "group": "er",
+      "forms": {
+        "present": {
+          "je": "travaille",
+          "tu": "travailles",
+          "il": "travaille",
+          "elle": "travaille",
+          "nous": "travaillons",
+          "vous": "travaillez",
+          "ils": "travaillent",
+          "elles": "travaillent"
+        }
+      }
+    },
+    {
+      "infinitive": "vendre",
+      "meaning": {
+        "en": "to sell",
+        "ru": "продавать"
+      },
+      "stem": "vend",
+      "group": "re",
+      "forms": {
+        "present": {
+          "je": "vends",
+          "tu": "vends",
+          "il": "vend",
+          "elle": "vend",
+          "nous": "vendons",
+          "vous": "vendez",
+          "ils": "vendent",
+          "elles": "vendent"
+        }
+      }
+    },
+    {
+      "infinitive": "venir",
+      "meaning": {
+        "en": "to come",
+        "ru": "приходить, приезжать"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "viens",
+          "tu": "viens",
+          "il": "vient",
+          "elle": "vient",
+          "nous": "venons",
+          "vous": "venez",
+          "ils": "viennent",
+          "elles": "viennent"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "vivre",
+      "meaning": {
+        "en": "to live",
+        "ru": "жить"
+      },
+      "stem": "viv",
+      "group": "re",
+      "forms": {
+        "present": {
+          "je": "vis",
+          "tu": "vis",
+          "il": "vit",
+          "elle": "vit",
+          "nous": "vivons",
+          "vous": "vivez",
+          "ils": "vivent",
+          "elles": "vivent"
+        }
+      }
+    },
+    {
+      "infinitive": "vouloir",
+      "meaning": {
+        "en": "to want",
+        "ru": "хотеть"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "veux",
+          "tu": "veux",
+          "il": "veut",
+          "elle": "veut",
+          "nous": "voulons",
+          "vous": "voulez",
+          "ils": "veulent",
+          "elles": "veulent"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    },
+    {
+      "infinitive": "écouter",
+      "meaning": {
+        "en": "to listen",
+        "ru": "слушать"
+      },
+      "stem": "écout",
+      "group": "er",
+      "forms": {
+        "present": {
+          "je": "écoute",
+          "tu": "écoutes",
+          "il": "écoute",
+          "elle": "écoute",
+          "nous": "écoutons",
+          "vous": "écoutez",
+          "ils": "écoutent",
+          "elles": "écoutent"
+        }
+      },
+      "pronouns": {
+        "present": {
+          "je": "j’"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Before a vowel or mute h, je contracts to j’. Example: j’écoute.",
+          "grammar_ru": "Перед гласной или немой h je сокращается до j’. Пример: j’écoute."
+        }
+      }
+    },
+    {
+      "infinitive": "écrire",
+      "meaning": {
+        "en": "to write",
+        "ru": "писать"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "écris",
+          "tu": "écris",
+          "il": "écrit",
+          "elle": "écrit",
+          "nous": "écrivons",
+          "vous": "écrivez",
+          "ils": "écrivent",
+          "elles": "écrivent"
+        }
+      },
+      "pronouns": {
+        "present": {
+          "je": "j’"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb. Also, je contracts to j’ before a vowel or mute h (e.g., j’écris).",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол. Также je сокращается до j’ перед гласной или немой h (например, j’écris)."
+        }
+      }
+    },
+    {
+      "infinitive": "être",
+      "meaning": {
+        "en": "to be",
+        "ru": "быть"
+      },
+      "group": "irregular",
+      "forms": {
+        "present": {
+          "je": "suis",
+          "tu": "es",
+          "il": "est",
+          "elle": "est",
+          "nous": "sommes",
+          "vous": "êtes",
+          "ils": "sont",
+          "elles": "sont"
+        }
+      },
+      "grammar": {
+        "present": {
+          "grammar_eng": "Notice: This is an IRREGULAR verb.",
+          "grammar_ru": "Внимание: это НЕПРАВИЛЬНЫЙ глагол."
+        }
+      }
+    }
+  ]
+}
