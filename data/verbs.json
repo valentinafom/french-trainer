@@ -1,8 +1,8 @@
 {
-  "id": "regular_verbs",
-  "name": "Regular verbs",
-  "name_ru": "Правильные глаголы",
-  "nameFr": "Verbes réguliers",
+  "id": "verbs",
+  "name": "Verbs",
+  "name_ru": "Глаголы",
+  "nameFr": "Verbes",
   "supportsForms": true,
   "rule": {
     "source_fr": "Conjugaison – verbes réguliers",
