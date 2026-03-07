@@ -5,183 +5,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Les nombres en français</title>
+  <link rel="stylesheet" href="styles.css">
   <style>
-    :root {
-      /* Ink wash palette */
-      --bg-page: #FFFFE3;
-      /* warm paper */
-      --bg-card: #ffffff;
-
-      --border-soft: #CBCBCB;
-      /* soft grey */
-
-      --text-main: #4A4A4A;
-      /* ink */
-      --text-muted: #6D8196;
-      /* muted blue */
-
-      --accent-primary: #6D8196;
-      /* primary actions */
-      --accent-danger: #4A4A4A;
-      /* reset / errors (ink, not aggressive) */
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg-card);
-      color: var(--text-main);
-    }
-
-    .wrap {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    p {
-      margin: 0 0 16px;
-      color: #444;
-    }
-
-    .card {
-      background: var(--bg-card);
-      border-radius: 16px;
-      padding: 18px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
-      margin: 14px 0;
-      border: 1px solid var(--border-soft);
-    }
-
-    .row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    label {
-      font-size: .9rem;
-      color: #333;
-    }
-
-    input[type="number"],
-    input[type="text"],
-    select {
-      padding: 8px 10px;
-      border-radius: 12px;
-      border: 1px solid #d8dbe6;
-      background: #fff;
-      font-size: 0.8rem;
-    }
-
-    input[type="text"] {
-      width: 170px;
-    }
-
-    button {
-      padding: 8px 10px;
-      border-radius: 12px;
-      border: 0;
-      cursor: pointer;
-      font-weight: 800;
-      background: var(--accent-primary);
-      color: #fff;
-    }
-
-    button:not(.icon-only) {
-      min-height: 20px;
-    }
-
-    .field {
-      display: inline-block;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .field select {
-      width: 100%;
-    }
-
-    button.secondary {
-      background: #ffffff;
-      color: var(--text-main);
-      border: 1px solid var(--border-soft);
-    }
-
-
-    button.tertiary {
-      background: transparent;
-      color: var(--text-main);
-      border: 1px solid transparent;
-      padding: 8px 10px;
-      border-radius: 10px;
-      font-weight: 600;
-    }
-
-    button.tertiary:hover {
-      background: rgba(23, 77, 56, 0.08);
-    }
-
-    button.tertiary:active {
-      background: rgba(23, 77, 56, 0.14);
-    }
-
-    button.tertiary:focus-visible {
-      outline: 2px solid rgba(23, 77, 56, 0.4);
-      outline-offset: 2px;
-    }
-
-    button:active {
-      transform: translateY(1px);
-    }
-
-    .big {
-      font-size: 3.2rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      margin: 4px 0 6px;
-    }
-
-    .french {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin: 0 0 8px;
-    }
-
-    .feedback {
-      font-weight: 700;
-      margin-top: 10px;
-    }
-
-    .ok {
-      color: #5F7F6E;
-      /* calm blue success */
-    }
-
-    .bad {
-      color: #7A3F3F;
-      /* ink for correction */
-    }
-
-    .expected {
-      font-weight: 900;
-      font-size: 1.2rem;
-      color: #5F7F6E;
-    }
-
-
-    .muted {
-      color: #666;
-    }
-
-    .tiny {
-      font-size: .85rem;
-      color: #666;
-    }
-
+    /* Page-specific styles for french-numbers.html */
     .pill {
       display: inline-block;
       padding: 4px 10px;
@@ -192,102 +18,24 @@
       font-weight: 650;
     }
 
-    .spacer {
-      height: 4px;
+    #rangesDropdown {
+      min-width: 260px;
     }
-
-    details summary {
-      cursor: pointer;
-      font-weight: 650;
-    }
-
-
-
-    .chk input[type="checkbox"] {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
-      border: 1px solid var(--border-soft);
-      border-radius: 4px;
-      background: #ffffff;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .chk input[type="checkbox"]:checked {
-      background: #ffffff;
-      border-color: #6D8196;
-    }
-
-    .chk input[type="checkbox"]:checked::after {
-      content: "✓";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -58%);
-      font-size: 12px;
-      color: #6D8196;
-      font-weight: 600;
-    }
-
-    .score-control {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: var(--bg-card);
-      color: var(--text-main);
-      font-weight: 650;
-      border: 1px solid var(--border-soft);
-    }
-
-    .score-control>button {
-      all: unset;
-      cursor: pointer;
-      color: var(--accent-danger);
-      padding: 2px 6px;
-      border-radius: 999px;
-      line-height: 1;
-    }
-
-
-    .score-control button:hover {
-      background: rgba(77, 23, 23, 0.12);
-    }
-
-    .row.no-wrap {
-      flex-wrap: nowrap;
-    }
-
-    .row.no-wrap input[type="text"] {
-      flex: 1 1 auto;
-      min-width: 0;
-      /* important for mobile */
-    }
-
-    .row.no-wrap button {
-      white-space: nowrap;
-    }
-    .back-link {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--accent-primary);
-            text-decoration: none;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
   </style>
 </head>
 
 <body>
 
   <div class="wrap">
-    <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
-      <a href="index.html" class="back-link">[Back to index]</a>
+    <div class="navbar">
+      <a href="index.html">Home</a>
+      <a href="french-numbers.html">Numbers</a>
+      <div class="dropdown">
+        <button class="dropbtn">Other exercises</button>
+        <div class="dropdown-content">
+          <!-- Auto-populated by common.js -->
+        </div>
+      </div>
     </div>
 
     <div class="card">
@@ -297,18 +45,10 @@
 
         <div class="spacer"></div>
 
-        <div class="row" style="margin-bottom:12px;">
-          <button class="secondary" id="range0_20" type="button">0–20</button>
-          <button class="secondary" id="range21_69" type="button">21–69</button>
-          <button class="secondary" id="range70_100" type="button">70–100</button>
-          <button class="secondary" id="range_grands" type="button">Les grands nombres</button>
-        </div>
-        <div class="row" style="margin-bottom:12px;">
-          <button class="tertiary" id="range100_1000" type="button">100–1000</button>
-          <button class="tertiary" id="range1000_10000" type="button">1000–10000</button>
-          <button class="tertiary" id="range10000_9999999" type="button">10000–9999999</button>
-          <button class="tertiary" id="range10000000_2000000000" type="button">10000000–2000000000</button>
-        </div>
+
+
+        
+
 
         <div class="row" style="margin-bottom:12px;">
           <div>
@@ -321,7 +61,9 @@
           </div>
         </div>
 
-        <div class="row" style="margin-bottom:12px;">
+        
+
+        <div class="row" style="margin-top:12px;">
           <div>
             <label for="mode">Mode</label><br />
             <select id="mode">
@@ -332,15 +74,10 @@
           <div class="field">
             <label for="showAccents">Strict spelling?</label>
             <select id="showAccents">
-              <option value="yes" selected>No (ignore accents & punctuation)</option>
-              <option value="no">Yes (strict)</option>
+              <option value="no" selected>No (ignore accents & punctuation)</option>
+              <option value="yes">Yes (strict)</option>
             </select>
           </div>
-
-        </div>
-
-        <div class="row" style="margin-top:12px;">
-
         </div>
         <p class="tiny" style="margin-top:10px;">
           Spelling matches 1990 rectified orthography: e.g. vingt-et-un,
@@ -360,10 +97,41 @@
           <button id="resetScoreBtn" type="button" aria-label="Reset score">✖</button>
         </div>
 
-        <label class="score-control" title="Speak slower">
+        <label class="score-control chk" title="Speak slower">
           <input type="checkbox" id="slowSpeak" />
           Slow
         </label>
+
+        <label class="score-control chk" title="Auto pronounce French">
+          <input type="checkbox" id="pronounce" />
+          Pronounce
+        </label>
+
+        <div class="dropdown">
+          <button onclick="toggleRanges()" class="dropbtn">
+            Quick ranges ▾
+          </button>
+        
+          <div id="rangesDropdown" class="dropdown-content">
+            <button class="dropdown-item secondary" id="range0_20" type="button">0–20</button>
+            <button class="dropdown-item secondary" id="range21_69" type="button">21–69</button>
+            <button class="dropdown-item secondary" id="range70_100" type="button">70–100</button>
+            <button class="dropdown-item secondary" id="range_grands" type="button">
+              Les grands nombres
+            </button>
+        
+            <hr>
+        
+            <button class="dropdown-item tertiary" id="range100_1000" type="button">100–1000</button>
+            <button class="dropdown-item tertiary" id="range1000_10000" type="button">1000–10000</button>
+            <button class="dropdown-item tertiary" id="range10000_9999999" type="button">
+              10000–9999999
+            </button>
+            <button class="dropdown-item tertiary" id="range10000000_2000000000" type="button">
+              10000000–2000000000
+            </button>
+          </div>
+        </div>
       </div>
       <div id="promptArea" style="margin-top: 14px;">
         <div class="big" id="bigPrompt"></div>
@@ -389,6 +157,7 @@
 
   </div>
 
+  <script src="common.js"></script>
   <script>
     const units = [
       "zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf",
@@ -486,15 +255,12 @@
       return milliardPart + " " + fr0to999999999(rest);
     }
 
-    // --- Answer normalisation ---
-    function stripDiacritics(s) {
-      return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
-    }
+    // --- Answer normalisation (specific to numbers) ---
     function normalise(s) {
       return s
         .trim()
         .toLowerCase()
-        .replace(/[’']/g, "'")
+        .replace(/['']/g, "'")
         // accept either spaces or hyphens from learners; compare in a hyphen-first form
         .replace(/\s+/g, "-")
         .replace(/-+/g, "-")
@@ -502,10 +268,10 @@
     }
     function comparable(s, acceptAccents) {
       const n = normalise(s);
-      return acceptAccents ? stripDiacritics(n) : n;
+      return acceptAccents ? stripDiacritics(n) : n; // Uses stripDiacritics from common.js
     }
 
-    const el = (id) => document.getElementById(id);
+    // el() is now imported from common.js
     const settingsDetailsEl = document.getElementById("settings");
     const minEl = el("min");
     const maxEl = el("max");
@@ -518,6 +284,11 @@
     const scorePillEl = el("scorePill");
     const acceptAccentsEl = el("showAccents");
     const slowSpeakEl = el("slowSpeak");
+    const pronounceEl = el("pronounce");
+
+    function shouldAutoPronounce() {
+      return !!pronounceEl?.checked;
+    }
 
     let currentNumber = null;
     let currentFrench = null;
@@ -538,9 +309,7 @@
 
     let useGrandNumbersSet = false;
 
-    function pickFromArray(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
+    // pick() is now imported from common.js
 
     function randInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -571,15 +340,11 @@
     }
 
 
-    function foldSettings() {
-      if (settingsDetailsEl?.open) {
-        settingsDetailsEl.open = false;
-      }
-    }
+    // foldSettings() is now imported from common.js
 
     function setCard() {
       const { min, max } = clampRange();
-      currentNumber = useGrandNumbersSet ? pickFromArray(GRAND_NUMBERS) : randInt(min, max);
+      currentNumber = useGrandNumbersSet ? pick(GRAND_NUMBERS) : randInt(min, max);
       currentFrench = fr0to2000000000(currentNumber);
 
       const mode = modeEl.value;
@@ -597,6 +362,10 @@
       answerEl.value = "";
       allowHotkeysInAnswer = false;
       answerEl.focus();
+
+      if (shouldAutoPronounce()) {
+        speak();
+      }
     }
 
     function updateScore() {
@@ -617,7 +386,7 @@
     }
 
     function check() {
-      foldSettings();
+      foldSettings(settingsDetailsEl);
       if (currentNumber === null) return;
 
       const mode = modeEl.value;
@@ -652,66 +421,11 @@
       allowHotkeysInAnswer = true;
       setCard();
     }
-    let cachedFrenchVoice = null;
-    let voicesLoaded = false;
-
-    function getFrenchVoice() {
-      if (cachedFrenchVoice) return cachedFrenchVoice;
-
-      const synth = window.speechSynthesis;
-      const voices = synth.getVoices?.() || [];
-      voicesLoaded = voices.length > 0;
-
-      // Prefer fr-FR specifically; fallback to any fr*
-      cachedFrenchVoice =
-        voices.find(v => (v.lang || "").toLowerCase() === "fr-fr") ||
-        voices.find(v => (v.lang || "").toLowerCase().startsWith("fr")) ||
-        null;
-
-      return cachedFrenchVoice;
-    }
-
-    // Some browsers (Chrome) load voices asynchronously
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.onvoiceschanged = () => {
-        // refresh cache once voices appear
-        cachedFrenchVoice = null;
-        getFrenchVoice();
-      };
-    }
-
-    let speakingNow = false;
-
+    // Speech synthesis functions are now imported from common.js
     function speak() {
       if (currentNumber === null) return;
-
-      const textToSpeak = currentFrench.replace(/-/g, " ");
-
-      if (!("speechSynthesis" in window)) {
-        feedbackEl.textContent = "Your browser doesn't support speech synthesis.";
-        feedbackEl.className = "feedback bad";
-        return;
-      }
-
-      // Prevent rapid spam clicks piling up work
-      if (speakingNow) window.speechSynthesis.cancel();
-
-      const u = new SpeechSynthesisUtterance(textToSpeak);
-
-      speakingNow = true;
-      u.onend = u.onerror = () => { speakingNow = false; };
-
-      // voice selection (see #2 below)
-      const frVoice = getFrenchVoice();
-      if (frVoice) u.voice = frVoice;
-      u.lang = frVoice?.lang || "fr-FR";
-
       const slow = !!slowSpeakEl?.checked;
-      u.rate = slow ? 0.70 : 0.90;
-      u.pitch = slow ? 0.95 : 1.0;
-
-      window.speechSynthesis.cancel(); // cancel queued items right before speaking
-      window.speechSynthesis.speak(u);
+      speakFrench(currentFrench, slow);
     }
 
 
@@ -729,14 +443,30 @@
     el("speakBtn").addEventListener("click", speak);
     el("resetScoreBtn").addEventListener("click", resetScore);
 
-    el("range0_20").addEventListener("click", () => setRange(0, 20));
-    el("range21_69").addEventListener("click", () => setRange(21, 69));
-    el("range70_100").addEventListener("click", () => setRange(70, 100));
-    el("range100_1000").addEventListener("click", () => setRange(100, 1000));
-    el("range1000_10000").addEventListener("click", () => setRange(1000, 10000));
-    el("range10000_9999999").addEventListener("click", () => setRange(10000, 9999999));
-    el("range10000000_2000000000").addEventListener("click", () => setRange(10000000, 2000000000));
-    el("range_grands").addEventListener("click", () => { useGrandNumbersSet = true; minEl.value = "100"; maxEl.value = "2000000000"; saveSettingsToStorage(); setCard(); });
+    el("range0_20").addEventListener("click", () => {
+  setRange(0, 20); saveSettingsToStorage();setCard();
+  closeRangesDropdown();
+});
+    el("range21_69").addEventListener("click", () => {
+      setRange(21, 69); saveSettingsToStorage();setCard();
+  closeRangesDropdown();
+});
+    el("range70_100").addEventListener("click", () => {setRange(70, 100);saveSettingsToStorage();setCard();
+  closeRangesDropdown();
+});
+    el("range100_1000").addEventListener("click", () => {setRange(100, 1000); saveSettingsToStorage();setCard();
+  closeRangesDropdown();
+});
+    el("range1000_10000").addEventListener("click", () => {setRange(1000, 10000); saveSettingsToStorage();setCard();
+  closeRangesDropdown();
+});
+    el("range10000_9999999").addEventListener("click", () => {setRange(10000, 9999999); saveSettingsToStorage();setCard();
+  closeRangesDropdown();
+});
+    el("range10000000_2000000000").addEventListener("click", () => {setRange(10000000, 2000000000);saveSettingsToStorage();setCard();
+  closeRangesDropdown();
+});
+    el("range_grands").addEventListener("click", () => { useGrandNumbersSet = true; minEl.value = "100"; maxEl.value = "2000000000"; saveSettingsToStorage(); closeRangesDropdown(); setCard(); });
 
     modeEl.addEventListener("change", () => {
       saveSettingsToStorage();
@@ -828,12 +558,33 @@
       localStorage.setItem(LS_GRANDS_KEY, String(useGrandNumbersSet));
     }
 
-
-    window.speechSynthesis?.getVoices?.();
+    // Speech synthesis initialization is now in common.js
 
     loadSettingsFromStorage();
     setCard();
     updateScore();
+
+    function toggleRanges() {
+  document.getElementById("rangesDropdown").classList.toggle("show");
+}
+
+// Close dropdown if user clicks outside
+window.addEventListener("click", function (e) {
+  const dropdown = document.getElementById("rangesDropdown");
+  const dropdownContainer = dropdown?.parentElement;
+
+  // Check if click is outside the dropdown container
+  if (dropdownContainer && !dropdownContainer.contains(e.target)) {
+    if (dropdown.classList.contains("show")) {
+      dropdown.classList.remove("show");
+    }
+  }
+});
+
+function closeRangesDropdown() {
+  document.getElementById("rangesDropdown")?.classList.remove("show");
+}
+
   </script>
 </body>
 

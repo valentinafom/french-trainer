@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -18,57 +17,79 @@
       max-width: 720px;
       margin: 0 auto;
       padding: 40px 20px;
-      text-align: center;
     }
 
     h1 {
-      font-size: 2rem;
-      margin-bottom: 12px;
+      text-align: center;
+      margin-bottom: 6px;
     }
 
-    p {
+    .sub {
+      text-align: center;
       color: #6D8196;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
 
-    a.button {
-      display: inline-block;
-      padding: 14px 22px;
+    /* Vertical tabs (W3Schools-style) */
+    .tab {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      background: rgba(109, 129, 150, 0.12);
+      padding: 10px;
+      border-radius: 16px;
+    }
+
+    .tab button {
+      display: block;
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      margin: 6px 0;
       border-radius: 12px;
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #4A4A4A;
+      transition: background 0.15s ease;
+    }
+
+    .tab button:hover {
+      background: rgba(109, 129, 150, 0.18);
+    }
+
+    .tab button.active {
       background: #6D8196;
       color: #ffffff;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    a.button:hover {
-      opacity: 0.9;
     }
   </style>
 </head>
 
 <body>
+
+
   <div class="wrap">
 
-    <a class="button" href="./french-numbers.html">
-      French numbers
-    </a>
+    <div id="google_translate_element"></div>
+    <h1>French Practice</h1>
+    <p class="sub">Choose a trainer</p>
 
-
-    <div class="row" style="margin-top:12px;">
-      <a class="button" href="./vocab.html">
-        Basic vocabulary
-      </a>
+    <div class="tab">
+      <!-- Auto-populated by common.js from NAV_PAGES -->
     </div>
-
-    <div class="row" style="margin-top:12px;">
-      <a class="button" href="./verbs.html">
-        Verbs (Present Tense)
-      </a>
-    </div>
-
-
   </div>
-</body>
 
+  <script src="common.js"></script>
+
+  <script
+  async
+  src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+
+  
+
+</body>
 </html>

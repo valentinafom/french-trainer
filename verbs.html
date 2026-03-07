@@ -4,320 +4,30 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Vocabulaire de base</title>
-    <style>
-        :root {
-            --bg-page: #FFFFE3;
-            --bg-card: #ffffff;
-            --border-soft: #CBCBCB;
-            --text-main: #4A4A4A;
-            --text-muted: #6D8196;
-            --accent-primary: #6D8196;
-            --accent-danger: #4A4A4A;
-        }
-
-        body {
-            margin: 0;
-            background: var(--bg-card);
-            color: var(--text-main);
-        }
-
-        .wrap {
-            max-width: 760px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 18px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
-            margin: 14px 0;
-            border: 1px solid var(--border-soft);
-        }
-
-        .row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .spacer {
-            height: 4px;
-        }
-
-
-        details summary {
-            cursor: pointer;
-            font-weight: 650;
-        }
-
-        .set-title {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-align: left;
-            margin-bottom: 6px;
-        }
-
-        label {
-            font-size: .9rem;
-            color: #333;
-        }
-
-        input[type="text"],
-        select {
-            padding: 8px 10px;
-            border-radius: 12px;
-            border: 1px solid #d8dbe6;
-            background: #fff;
-            font-size: 0.9rem;
-        }
-
-        input[type="text"] {
-            width: 220px;
-        }
-
-        button {
-            padding: 8px 10px;
-            border-radius: 12px;
-            border: 0;
-            cursor: pointer;
-            font-weight: 800;
-            background: var(--accent-primary);
-            color: #fff;
-        }
-
-        button:active {
-            transform: translateY(1px);
-        }
-
-        button.secondary {
-            background: #fff;
-            color: var(--text-main);
-            border: 1px solid var(--border-soft);
-        }
-
-        .big {
-            font-size: 1.4rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin: 4px 0 6px;
-        }
-
-        .small {
-            font-size: 2.6rem;
-            font-weight: 800;
-            margin: 0 0 8px;
-            color: var(--accent-primary);
-        }
-
-        .tiny {
-            font-size: .85rem;
-            color: #666;
-        }
-
-        .grammar {
-            font-size: .85rem;
-            color: darkred;
-        }
-
-        .feedback {
-            font-weight: 700;
-            margin-top: 10px;
-        }
-
-        .ok {
-            color: #5F7F6E;
-        }
-
-        .bad {
-            color: #7A3F3F;
-        }
-
-        .expected {
-            font-weight: 800;
-            font-size: 1.4rem;
-            color: #5F7F6E;
-        }
-
-
-        .muted {
-            color: #666;
-        }
-
-        .score-control {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 6px 12px;
-            border-radius: 999px;
-            background: var(--bg-card);
-            color: var(--text-main);
-            font-weight: 650;
-            border: 1px solid var(--border-soft);
-        }
-
-        .score-control>button {
-            all: unset;
-            cursor: pointer;
-            color: var(--accent-danger);
-            padding: 2px 6px;
-            border-radius: 999px;
-            line-height: 1;
-        }
-
-        .score-control button:hover {
-            background: rgba(77, 23, 23, 0.12);
-        }
-
-        button.disabled,
-        button:disabled {
-            opacity: 0.45;
-            cursor: not-allowed;
-        }
-
-        .chk input[type="checkbox"] {
-            appearance: none;
-            -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
-            border: 1px solid var(--border-soft);
-            border-radius: 4px;
-            background: #fff;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .chk input[type="checkbox"]:disabled {
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        .chk input[type="checkbox"]:checked {
-            border-color: #6D8196;
-        }
-
-        .chk input[type="checkbox"]:checked::after {
-            content: "✓";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -58%);
-            font-size: 12px;
-            color: #6D8196;
-            font-weight: 600;
-        }
-
-        .row.no-wrap {
-            flex-wrap: nowrap;
-        }
-
-        .row.no-wrap input[type="text"] {
-            flex: 1 1 auto;
-            min-width: 0;
-            /* important for mobile */
-        }
-
-        .row.no-wrap button {
-            white-space: nowrap;
-        }
-
-        .back-link {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--accent-primary);
-            text-decoration: none;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
-        .rule-title {
-            font-size: 0.9rem;
-            font-weight: 800;
-            margin: 0 0 6px;
-        }
-
-        .rule-subtitle {
-            font-size: .9rem;
-            color: #666;
-            margin: 0 0 10px;
-        }
-
-        .rule-section {
-            margin-top: 12px;
-            background: var(--bg-page);
-        }
-
-        .rule-badge {
-            display: inline-block;
-            border: 1px solid var(--border-soft);
-            border-radius: 999px;
-            padding: 2px 6px;
-            font-weight: 300;
-            font-size: 1.0rem;
-            color: #5F7F6E;
-            margin-left: 5px;
-        }
-
-        .rule-grid {
-            display: grid;
-            grid-template-columns: 50px 1fr;
-            gap: 10px 6px;
-            margin-top: 8px;
-        }
-
-        .rule-code {
-            color: Tomato;
-        }
-
-        .rule-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-
-        .rule-table th,
-        .rule-table td {
-            border: 1px solid var(--border-soft);
-            padding: 8px 10px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        .rule-table th {
-            background: var(--bg-page);
-            font-weight: 800;
-            color: var(--text-main);
-        }
-
-        .rule-table td code {
-            font-weight: 700;
-        }
-
-        .rule-table td [data-red] {
-            color: darkred;
-        }
-    </style>
+    <title>Les verbes</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
 
     <div class="wrap">
-        <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
-            <a href="index.html" class="back-link">[Back to index]</a>
+        <div class="navbar">
+            <a href="index.html">Home</a>
+            <a href="french-numbers.html">Numbers</a>
+            <div class="dropdown">
+                <button class="dropbtn">Other exercises</button>
+                <div class="dropdown-content">
+                    <!-- Auto-populated by common.js -->
+                </div>
+            </div>
         </div>
+
         <div class="card">
             <details id="settings">
                 <summary>Settings</summary>
                 <div class="spacer"></div>
-
+                <div id="google_translate_element"></div>
                 <div class="row" style="margin-bottom:12px;">
                     <div>
                         <label for="prefLang">Language</label><br />
@@ -337,18 +47,15 @@
                     </div>
 
 
-                  <div>
+                  <div translate="no">
                         <label for="tense">Tense</label><br />
                         <select id="tense">
                             <option value="present">Present</option>
                         </select>
-                        </label>
                     </div>
 
-                    <div>
-                        <label for="topicSet">Topic</label><br />
-                        <select id="topicSet"></select>
-                    </div> 
+                    <!-- Topic select hidden - using custom dropdown instead -->
+                    <select id="topicSet" style="display:none;"></select> 
 
                     <div>
                         <label for="strict">Strict spelling?</label><br />
@@ -362,17 +69,17 @@
                     <div class="tiny" style="margin-bottom:8px; font-weight:700;">Verb group filters</div>
 
                     <div class="row">
-                        <label class="score-control chk" title="-ER verbs">
+                        <label translate="no" class="score-control chk" title="-ER verbs">
                             <input type="checkbox" id="grp_er" />
                             -ER
                         </label>
 
-                        <label class="score-control chk" title="-IR verbs">
+                        <label translate="no" class="score-control chk" title="-IR verbs">
                             <input type="checkbox" id="grp_ir" />
                             -IR
                         </label>
 
-                        <label class="score-control chk" title="-RE verbs">
+                        <label translate="no" class="score-control chk" title="-RE verbs">
                             <input type="checkbox" id="grp_re" />
                             -RE
                         </label>
@@ -413,6 +120,20 @@
                     <input type="checkbox" id="study" />
                     Study mode
                 </label>
+
+                <label class="score-control chk" title="Auto pronounce French">
+                    <input type="checkbox" id="pronounce" />
+                    Pronounce
+                </label>
+
+                <div class="dropdown">
+                    <button onclick="toggleTopics()" class="dropbtn">
+                        <span id="currentTopicLabel">Topics</span> ▾
+                    </button>
+                    <div id="topicsDropdown" class="dropdown-content">
+                        <!-- Topics will be populated by JavaScript -->
+                    </div>
+                </div>
             </div>
 
             <div id="promptArea" style="margin-top: 14px;">
@@ -456,16 +177,11 @@
 
     </div>
 
+    <script src="common.js"></script>
     <script>
         let TOPIC_SETS = [];
 
-        async function loadJsonSet(path) {
-            const res = await fetch(path);
-            if (!res.ok) {
-                throw new Error(`Failed to load ${path}`);
-            }
-            return res.json();
-        }
+        // loadJsonSet() is imported from common.js
 
         async function loadAllSets() {
             TOPIC_SETS = [
@@ -477,16 +193,12 @@
         // Optional: change the default set here
         const DEFAULT_SET_ID = "verbs";
 
-        const el = (id) => document.getElementById(id);
+        // el() is imported from common.js
         const settingsDetailsEl = document.getElementById("settings");
 
         const prefLangEl = el("prefLang");
 
-        const LANG_LABELS = {
-            en: "English",
-            ru: "Русский",
-        };
-
+        // LANG_LABELS is imported from common.js
 
         const modeEl = el("mode");
         const topicSetEl = el("topicSet");
@@ -502,6 +214,7 @@
         const answerRowEl = el("answerRow");
         const nextBtnEl = el("nextBtn");
         const studyEl = el("study");
+        const pronounceEl = el("pronounce");
 
         const revealBtnEl = el("revealBtn");
 
@@ -573,13 +286,7 @@
             revealBtnEl.classList.toggle("disabled", isStudy);
         }
 
-
-        function escapeHtml(s) {
-            return String(s ?? "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;");
-        }
+        // escapeHtml() is imported from common.js
 
         function fmtVerbExampleTable(p, lang, tense = "present") {
             if (!p) return "";
@@ -743,36 +450,9 @@
 
 
 
-        function foldSettings() {
-            if (settingsDetailsEl?.open) {
-                settingsDetailsEl.open = false;
-            }
-        }
+        // foldSettings() is imported from common.js
 
-        function stripDiacritics(s) {
-            // remove accents
-            return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        }
-
-        function normaliseLoose(s) {
-            return stripDiacritics(
-                String(s || "")
-                    .trim()
-                    .toLowerCase()
-                    .replace(/[’']/g, "'")
-                    // treat hyphens/spaces/punctuation as equivalent separators
-                    .replace(/[\s\-_.!,;:()]+/g, " ")
-                    .replace(/\s+/g, " ")
-                    .trim()
-            );
-        }
-
-        function normaliseStrict(s) {
-            return String(s || "")
-                .trim()
-                .toLowerCase()
-                .replace(/[’']/g, "'");
-        }
+        // stripDiacritics(), normaliseLoose(), and normaliseStrict() are imported from common.js
 
         function norm(s) {
             const strict = strictEl.value === "yes";
@@ -829,6 +509,10 @@
             return !!studyEl?.checked;
         }
 
+        function shouldAutoPronounce() {
+            return !!pronounceEl?.checked;
+        }
+
         function getActiveSet() {
             const id = topicSetEl.value;
             return TOPIC_SETS.find(s => s.id === id) || TOPIC_SETS[0];
@@ -847,10 +531,7 @@
             return String(text || "").trim();
         }
 
-
-        function pick(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }
+        // pick() is imported from common.js
 
         function updateSetTitle() {
             const set = getActiveSet();
@@ -972,6 +653,10 @@
                 reveal({ fromCheck: false });
             }
 
+            if (shouldAutoPronounce()) {
+                speakText(getSpeakText());
+            }
+
         }
 
 
@@ -1024,7 +709,7 @@
 
 
         function check() {
-            foldSettings();
+            foldSettings(settingsDetailsEl);
             if (!currentItem) return;
 
             const user = norm(answerEl.value);
@@ -1062,23 +747,7 @@
             feedbackEl.className = "feedback muted";
         }
 
-        // --- Speech (French voice selection + slow mode) ---
-        let cachedFrenchVoice = null;
-
-        function getFrenchVoice() {
-            if (cachedFrenchVoice) return cachedFrenchVoice;
-            const synth = window.speechSynthesis;
-            const voices = synth.getVoices?.() || [];
-            cachedFrenchVoice =
-                voices.find(v => (v.lang || "").toLowerCase() === "fr-fr") ||
-                voices.find(v => (v.lang || "").toLowerCase().startsWith("fr")) ||
-                null;
-            return cachedFrenchVoice;
-        }
-
-        if ("speechSynthesis" in window) {
-            window.speechSynthesis.onvoiceschanged = () => { cachedFrenchVoice = null; getFrenchVoice(); };
-        }
+        // Speech synthesis functions are imported from common.js
 
         function getSpeakText() {
             if (!currentItem) return "";
@@ -1094,28 +763,11 @@
             return currentItem.infinitive || "";
         }
 
-
         function speakText(text) {
             const t = String(text || "").trim();
             if (!t) return;
-
-            if (!("speechSynthesis" in window)) return;
-
-            // Replace hyphens with spaces (keeps your old behaviour)
-            const textToSpeak = t.replace(/-/g, " ");
-
-            window.speechSynthesis.cancel();
-
-            const u = new SpeechSynthesisUtterance(textToSpeak);
-            const frVoice = getFrenchVoice();
-
-            if (frVoice) u.voice = frVoice;
-            u.lang = frVoice?.lang || "fr-FR";
-
             const slow = !!slowSpeakEl?.checked;
-            u.rate = slow ? 0.50 : 0.90;
-
-            window.speechSynthesis.speak(u);
+            speakFrench(t, slow);
         }
 
 
@@ -1227,15 +879,67 @@
         // Populate topic dropdown
         function initTopicDropdown() {
             topicSetEl.innerHTML = "";
+            const customDropdown = document.getElementById("topicsDropdown");
+
+            if (!customDropdown) {
+                console.error("topicsDropdown element not found!");
+                return;
+            }
+
+            customDropdown.innerHTML = "";
+
             for (const set of TOPIC_SETS) {
+                // Populate hidden select for compatibility
                 const opt = document.createElement("option");
                 opt.value = set.id;
                 opt.textContent = getTopicName(set);
                 topicSetEl.appendChild(opt);
+
+                // Populate custom dropdown
+                const btn = document.createElement("button");
+                btn.className = "dropdown-item secondary";
+                btn.type = "button";
+                btn.textContent = getTopicName(set);
+                btn.dataset.topicId = set.id;
+                btn.addEventListener("click", () => {
+                    selectTopic(set.id);
+                    closeTopicsDropdown();
+                });
+                customDropdown.appendChild(btn);
             }
+
             // default selection
-            const hasDefault = TOPIC_SETS.some(s => s.id === DEFAULT_SET_ID);
-            topicSetEl.value = hasDefault ? DEFAULT_SET_ID : TOPIC_SETS[0].id;
+            if (TOPIC_SETS.length > 0) {
+                const hasDefault = TOPIC_SETS.some(s => s.id === DEFAULT_SET_ID);
+                const defaultId = hasDefault ? DEFAULT_SET_ID : TOPIC_SETS[0].id;
+                topicSetEl.value = defaultId;
+                updateTopicLabel(defaultId);
+            }
+        }
+
+        function selectTopic(topicId) {
+            topicSetEl.value = topicId;
+            updateTopicLabel(topicId);
+            saveTopicSelection();
+            applyFormsUIForSet(getActiveSet());
+            updateSetTitle();
+            renderRuleCard();
+            setCard();
+        }
+
+        function updateTopicLabel(topicId) {
+            const set = TOPIC_SETS.find(s => s.id === topicId);
+            if (set) {
+                document.getElementById("currentTopicLabel").textContent = getTopicName(set);
+            }
+        }
+
+        function toggleTopics() {
+            document.getElementById("topicsDropdown").classList.toggle("show");
+        }
+
+        function closeTopicsDropdown() {
+            document.getElementById("topicsDropdown")?.classList.remove("show");
         }
 
         const LS_PREF_LANG_KEY = "ft_prefLang";
@@ -1253,7 +957,10 @@
 
         function loadTopicSelection() {
             const saved = localStorage.getItem(LS_TOPIC_KEY);
-            if (saved) topicSetEl.value = saved;
+            if (saved) {
+                topicSetEl.value = saved;
+                updateTopicLabel(saved);
+            }
         }
 
         function saveTopicSelection() {
@@ -1263,6 +970,19 @@
 
 
         window.speechSynthesis?.getVoices?.();
+
+        // Close topics dropdown if user clicks outside
+        window.addEventListener("click", function (e) {
+            const dropdown = document.getElementById("topicsDropdown");
+            const dropdownContainer = dropdown?.parentElement;
+
+            // Check if click is outside the dropdown container
+            if (dropdownContainer && !dropdownContainer.contains(e.target)) {
+                if (dropdown.classList.contains("show")) {
+                    dropdown.classList.remove("show");
+                }
+            }
+        });
         (async function initApp() {
             loadPreferredLanguage();
 
@@ -1282,6 +1002,11 @@
             updateScore();
         })();
     </script>
+
+<script
+async
+src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
 </body>
 
 </html>

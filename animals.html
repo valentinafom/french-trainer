@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Vocabulaire de base</title>
+    <title>Les animaux</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -108,15 +108,6 @@
                     <input type="checkbox" id="pronounce" />
                     Pronounce
                 </label>
-
-                <div class="dropdown">
-                    <button onclick="toggleTopics()" class="dropbtn">
-                        <span id="currentTopicLabel">Topics</span> ▾
-                    </button>
-                    <div id="topicsDropdown" class="dropdown-content">
-                        <!-- Topics will be populated by JavaScript -->
-                    </div>
-                </div>
             </div>
 
             <div id="promptArea" style="margin-top: 14px;">
@@ -152,137 +143,7 @@
     <script src="common.js"></script>
     <script src="vocab-trainer.js"></script>
     <script>
-        // Vocab page supports multiple topic sets with a dropdown
-        const TOPIC_FILES = [
-            "data/days.json",
-            "data/months.json",
-            "data/colours.json",
-            "data/professions.json",
-            "data/animals.json"
-        ];
-
-        let TOPIC_SETS = [];
-        const DEFAULT_SET_ID = "days";
-        const LS_TOPIC_KEY = "ft_vocabTopicSet";
-
-        // Override initVocabTrainer to support multiple topics
-        async function initVocabPage() {
-            // Load all topic sets
-            for (const file of TOPIC_FILES) {
-                try {
-                    const set = await loadJsonSet(file);
-                    TOPIC_SETS.push(set);
-                } catch (e) {
-                    console.error(`Failed to load ${file}:`, e);
-                }
-            }
-
-            if (TOPIC_SETS.length === 0) {
-                document.getElementById("bigPrompt").textContent = "Failed to load vocabulary data";
-                return;
-            }
-
-            // Initialize with first set, then setup topic switching
-            await initVocabTrainer(TOPIC_FILES[0]);
-
-            // Override DATA_SET reference for topic switching
-            initTopicDropdown();
-            loadTopicSelection();
-        }
-
-        function getTopicName(set) {
-            const lang = document.getElementById("prefLang")?.value || "en";
-            if (lang === "ru" && set.name_ru) return set.name_ru;
-            return set.name;
-        }
-
-        function initTopicDropdown() {
-            const customDropdown = document.getElementById("topicsDropdown");
-            if (!customDropdown) return;
-
-            customDropdown.innerHTML = "";
-
-            for (const set of TOPIC_SETS) {
-                const btn = document.createElement("button");
-                btn.className = "dropdown-item secondary";
-                btn.type = "button";
-                btn.textContent = getTopicName(set);
-                btn.dataset.topicId = set.id;
-                btn.addEventListener("click", () => {
-                    selectTopic(set.id);
-                    closeTopicsDropdown();
-                });
-                customDropdown.appendChild(btn);
-            }
-
-            // Set initial label
-            const current = TOPIC_SETS[0];
-            if (current) {
-                document.getElementById("currentTopicLabel").textContent = getTopicName(current);
-            }
-        }
-
-        function selectTopic(topicId) {
-            const set = TOPIC_SETS.find(s => s.id === topicId);
-            if (!set) return;
-
-            // Update the global DATA_SET in vocab-trainer.js
-            DATA_SET = set;
-
-            document.getElementById("currentTopicLabel").textContent = getTopicName(set);
-            localStorage.setItem(LS_TOPIC_KEY, topicId);
-
-            // Refresh UI
-            applyFormsUI();
-            updateSetTitle();
-            renderRuleCard();
-            setCard();
-        }
-
-        function loadTopicSelection() {
-            const saved = localStorage.getItem(LS_TOPIC_KEY);
-            if (saved) {
-                const set = TOPIC_SETS.find(s => s.id === saved);
-                if (set) {
-                    DATA_SET = set;
-                    document.getElementById("currentTopicLabel").textContent = getTopicName(set);
-                    applyFormsUI();
-                    updateSetTitle();
-                    renderRuleCard();
-                    setCard();
-                }
-            }
-        }
-
-        function toggleTopics() {
-            document.getElementById("topicsDropdown").classList.toggle("show");
-        }
-
-        function closeTopicsDropdown() {
-            document.getElementById("topicsDropdown")?.classList.remove("show");
-        }
-
-        // Close dropdown on outside click
-        window.addEventListener("click", function(e) {
-            const dropdown = document.getElementById("topicsDropdown");
-            const dropdownContainer = dropdown?.parentElement;
-            if (dropdownContainer && !dropdownContainer.contains(e.target)) {
-                dropdown?.classList.remove("show");
-            }
-        });
-
-        // Re-init dropdown when language changes
-        document.getElementById("prefLang")?.addEventListener("change", () => {
-            initTopicDropdown();
-            const currentId = localStorage.getItem(LS_TOPIC_KEY) || DEFAULT_SET_ID;
-            const set = TOPIC_SETS.find(s => s.id === currentId);
-            if (set) {
-                document.getElementById("currentTopicLabel").textContent = getTopicName(set);
-            }
-        });
-
-        // Start the page
-        initVocabPage();
+        initVocabTrainer("data/animals.json");
     </script>
 </body>
 
