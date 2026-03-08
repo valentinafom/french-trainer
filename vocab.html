@@ -4,7 +4,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Vocabulaire de base</title>
+    <meta name="theme-color" content="#FFFFE3" />
+    <link rel="manifest" href="manifest.json" />
+    <title>Thematic vocabulary</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -12,7 +14,6 @@
     <div class="wrap">
         <div class="navbar">
             <a href="index.html">Home</a>
-            <a href="french-numbers.html">Numbers</a>
             <div class="dropdown">
                 <button class="dropbtn">Other exercises</button>
                 <div class="dropdown-content">
@@ -51,6 +52,7 @@
                         </select>
                     </div>
                 </div>
+                <div id="mobileTopicAnchor" style="display: none; margin-top: 12px;"></div>
 
                 <div id="formsBox" style="margin-top:12px;">
                     <div class="tiny" style="margin-bottom:8px; font-weight:700;">Gender & Number filters</div>
@@ -69,7 +71,7 @@
 
                     <div class="row" style="margin-top:10px;">
                         <label class="score-control chk" title="Singular">
-                            <input type="checkbox" id="qty_s" />
+                            <input type="checkbox" id="qty_s" checked />
                             Singular
                         </label>
 
@@ -82,61 +84,74 @@
                     <div class="tiny" style="margin-top:8px;" id="formsHint"></div>
                 </div>
 
+                <div class="row" style="margin-top:14px; flex-wrap:wrap; gap:8px;">
+                    <label class="score-control chk" title="Study mode - auto reveal answers">
+                        <input type="checkbox" id="study" />
+                        Study mode
+                    </label>
+                    <label class="score-control chk" title="Random order">
+                        <input type="checkbox" id="random" />
+                        Random
+                    </label>
+                    <label class="score-control chk" title="Speak slower">
+                        <input type="checkbox" id="slowSpeak" />
+                        Slow
+                    </label>
+                    <label class="score-control chk" title="Auto pronounce French">
+                        <input type="checkbox" id="pronounce" />
+                        Pronounce
+                    </label>
+                </div>
+
             </details>
         </div>
 
         <div class="card">
             <div class="set-title" id="setTitleFr"></div>
 
-            <div class="row" style="margin-top:12px;">
-                <div class="score-control" title="Press X to reset score">
-                    <span id="scorePill">Score: 0/0</span>
-                    <button id="resetScoreBtn" type="button" aria-label="Reset score">✖</button>
-                </div>
-
-                <label class="score-control chk" title="Speak slower">
-                    <input type="checkbox" id="slowSpeak" />
-                    Slow
-                </label>
-
-                <label class="score-control chk" title="Study mode - auto reveal answers">
-                    <input type="checkbox" id="study" />
-                    Study mode
-                </label>
-
-                <label class="score-control chk" title="Auto pronounce French">
-                    <input type="checkbox" id="pronounce" />
-                    Pronounce
-                </label>
+            <div class="row controls-container" style="margin-top:12px;">
 
                 <div class="dropdown">
-                    <button onclick="toggleTopics()" class="dropbtn">
+                    <button onclick="toggleTopics()" class="dropbtn" style="padding: 8px 12px;">
                         <span id="currentTopicLabel">Topics</span> ▾
                     </button>
                     <div id="topicsDropdown" class="dropdown-content">
                         <!-- Topics will be populated by JavaScript -->
                     </div>
                 </div>
+
+                <div class="score-control">
+                    <span id="scorePill">Score: 0/0</span>
+                </div>
+                <div class="score-control" title="Press X to reset score">
+                    <span id="progressPill">Words: 0/0</span>
+                    <button id="resetScoreBtn" type="button" aria-label="Reset score">✖</button>
+                </div>
             </div>
 
             <div id="promptArea" style="margin-top: 14px;">
                 <div class="big" id="bigPrompt"></div>
-                <div class="small" id="smallPrompt"></div>
+                <div class="small" id="smallPrompt" style="margin-top: 12px;"></div>
             </div>
 
             <div class="row no-wrap" style="margin-top: 12px;">
                 <input id="answer" type="text" placeholder="Type your answer…" autocomplete="off" />
-                <button id="checkBtn" title="press (enter) to check / press (n) for new card" type="button">Check /
-                    Next</button>
+                <button id="checkBtn" title="press (enter) to check" type="button">Check</button>
             </div>
 
-            <div class="feedback" id="feedback"></div>
-            <div class="tiny" id="extra"></div>
+            <div class="prev-row" id="prevRow">
+                <div class="feedback" id="feedback"></div>
+                <div class="tiny" id="extra"></div>
+            </div>
 
-            <div class="row" style="margin-top:12px;">
-                <button class="secondary" id="revealBtn" title="press (r) to Reveal" type="button">Reveal</button>
+            <div class="button-row" style="margin-top:12px;">
                 <button class="secondary" id="speakBtn" title="press (s) to Pronounce" type="button">🔊 Listen</button>
+                <button class="secondary" id="prevBtn" title="press (p) for previous card" type="button">Previous</button>
+                <button class="secondary" id="revealBtn" title="press (r) to Reveal" type="button">Reveal</button>
+
             </div>
+
+
         </div>
 
         <div class="card" id="ruleCard" style="display:none;">
@@ -154,16 +169,18 @@
     <script>
         // Vocab page supports multiple topic sets with a dropdown
         const TOPIC_FILES = [
-            "data/days.json",
-            "data/months.json",
-            "data/colours.json",
-            "data/professions.json",
-            "data/animals.json"
+            "data/days.js",
+            "data/months.js",
+            "data/colours.js",
+            "data/professions.js",
+            "data/animals.js"
         ];
 
         let TOPIC_SETS = [];
         const DEFAULT_SET_ID = "days";
         const LS_TOPIC_KEY = "ft_vocabTopicSet";
+        
+        let trainerInstance = null;
 
         // Override initVocabTrainer to support multiple topics
         async function initVocabPage() {
@@ -171,7 +188,7 @@
             for (const file of TOPIC_FILES) {
                 try {
                     const set = await loadJsonSet(file);
-                    TOPIC_SETS.push(set);
+                    if (set) TOPIC_SETS.push(set);
                 } catch (e) {
                     console.error(`Failed to load ${file}:`, e);
                 }
@@ -182,10 +199,9 @@
                 return;
             }
 
-            // Initialize with first set, then setup topic switching
-            await initVocabTrainer(TOPIC_FILES[0]);
+            // Initialize trainer instance with first set
+            trainerInstance = new VocabTrainer(TOPIC_SETS[0]);
 
-            // Override DATA_SET reference for topic switching
             initTopicDropdown();
             loadTopicSelection();
         }
@@ -224,32 +240,22 @@
 
         function selectTopic(topicId) {
             const set = TOPIC_SETS.find(s => s.id === topicId);
-            if (!set) return;
+            if (!set || !trainerInstance) return;
 
-            // Update the global DATA_SET in vocab-trainer.js
-            DATA_SET = set;
+            // Update the trainer instance's data set
+            trainerInstance.updateDataSet(set);
 
             document.getElementById("currentTopicLabel").textContent = getTopicName(set);
             localStorage.setItem(LS_TOPIC_KEY, topicId);
-
-            // Refresh UI
-            applyFormsUI();
-            updateSetTitle();
-            renderRuleCard();
-            setCard();
         }
 
         function loadTopicSelection() {
             const saved = localStorage.getItem(LS_TOPIC_KEY);
-            if (saved) {
+            if (saved && trainerInstance) {
                 const set = TOPIC_SETS.find(s => s.id === saved);
                 if (set) {
-                    DATA_SET = set;
+                    trainerInstance.updateDataSet(set);
                     document.getElementById("currentTopicLabel").textContent = getTopicName(set);
-                    applyFormsUI();
-                    updateSetTitle();
-                    renderRuleCard();
-                    setCard();
                 }
             }
         }
@@ -282,7 +288,7 @@
         });
 
         // Start the page
-        initVocabPage();
+        document.addEventListener("DOMContentLoaded", initVocabPage);
     </script>
 </body>
 

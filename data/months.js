@@ -1,4 +1,4 @@
-{
+window.DATA_SET = {
     "id": "months",
     "name": "Months",
     "name_ru": "Месяцы",
@@ -19,4 +19,4 @@
       { "a": "December", "a_ru": "Декабрь", "b": "décembre" }
     ]
   }
-  
+  ;

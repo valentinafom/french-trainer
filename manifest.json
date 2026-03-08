@@ -1,0 +1,15 @@
+{
+  "name": "French Trainer",
+  "short_name": "FrenchTrainer",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FFFFE3",
+  "theme_color": "#FFFFE3",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

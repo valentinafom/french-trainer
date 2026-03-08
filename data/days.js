@@ -1,4 +1,4 @@
-{
+window.DATA_SET = {
     "id": "days",
     "name": "Days of the week",
     "name_ru": "Дни недели",
@@ -14,4 +14,4 @@
       { "a": "Sunday", "a_ru": "Воскресенье", "b": "dimanche" }
     ]
   }
-  
+  ;

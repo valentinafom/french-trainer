@@ -1,476 +1,563 @@
 /**
  * Vocabulary Trainer Module
- * Shared logic for all vocabulary practice pages.
- *
- * Usage:
- *   <script src="common.js"></script>
- *   <script src="vocab-trainer.js"></script>
- *   <script>
- *     initVocabTrainer("data/your-file.json");
- *   </script>
+ * Encapsulated logic for all vocabulary practice pages.
  */
+class VocabTrainer {
+    constructor(dataFileOrSet) {
+        this.DATA_SET = null;
+        this.currentFrench = null;
+        this.currentItem = null;
+        this.currentFormLabel = "";
+        this.total = 0;
+        this.correct = 0;
+        this.allowHotkeysInAnswer = false;
+        this.currentExpectedForms = [];
+        this.currentFormKey = null;
 
-// Form labels for different languages
-const FORM_LABELS_RU = {
-    ms: "м.р., ед.ч.",
-    fs: "ж.р., ед.ч.",
-    mp: "м.р., мн.ч.",
-    fp: "ж.р., мн.ч."
-};
+        // Sequence / History state
+        this.history = []; // Array of specific item states { item, formKey, french, labels... }
+        this.historyIndex = -1;
+        this.seqIndex = -1;
+        this.currentValidItems = [];
 
-const FORM_LABELS_EN = {
-    ms: "m. sg.",
-    fs: "f. sg.",
-    mp: "m. pl.",
-    fp: "f. pl."
-};
+        // Constants
+        this.LS_PREF_LANG_KEY = "ft_prefLang";
+        this.FORM_LABELS_RU = { ms: "м.р., ед.ч.", fs: "ж.р., ед.ч.", mp: "м.р., мн.ч.", fp: "ж.р., мн.ч." };
+        this.FORM_LABELS_EN = { ms: "m. sg.", fs: "f. sg.", mp: "m. pl.", fp: "f. pl." };
 
-// DOM Elements
-let settingsDetailsEl, prefLangEl, modeEl, strictEl, slowSpeakEl, studyEl, pronounceEl, revealBtnEl;
-let setTitleFrEl, ruleCardEl, ruleBodyEl, ruleSummaryTitleEl;
-let answerEl, feedbackEl, extraEl, bigPromptEl, smallPromptEl, scorePillEl;
-let formsBoxEl, formsHintEl, genderEls, qtyEls;
+        // DOM elements
+        this.settingsDetailsEl = el("settings");
+        this.prefLangEl = el("prefLang");
+        this.modeEl = el("mode");
+        this.strictEl = el("strict");
+        this.slowSpeakEl = el("slowSpeak");
+        this.studyEl = el("study");
+        this.randomEl = el("random");
+        this.pronounceEl = el("pronounce");
+        this.revealBtnEl = el("revealBtn");
+        this.prevBtnEl = el("prevBtn");
 
-// State
-let DATA_SET = null;
-let currentFrench = null;
-let currentItem = null;
-let currentFormLabel = "";
-let total = 0;
-let correct = 0;
-let allowHotkeysInAnswer = false;
-let currentExpectedForms = [];
-let currentFormKey = null;
+        this.checkBtnEl = el("checkBtn");
+        this.setTitleFrEl = el("setTitleFr");
+        this.ruleCardEl = el("ruleCard");
+        this.ruleBodyEl = el("ruleBody");
+        this.ruleSummaryTitleEl = el("ruleSummaryTitle");
+        this.answerEl = el("answer");
+        this.feedbackEl = el("feedback");
+        this.extraEl = el("extra");
+        this.bigPromptEl = el("bigPrompt");
+        this.smallPromptEl = el("smallPrompt");
+        this.scorePillEl = el("scorePill");
+        this.progressPillEl = el("progressPill");
+        this.wordsSeenSet = new Set();
+        this.formsBoxEl = el("formsBox");
+        this.formsHintEl = el("formsHint");
+        
+        this.genderEls = { m: el("gender_m"), f: el("gender_f") };
+        this.qtyEls = { s: el("qty_s"), p: el("qty_p") };
 
-const LS_PREF_LANG_KEY = "ft_prefLang";
+        // Bind methods for event listeners
+        this._boundSetCard = this.setCard.bind(this);
 
-/**
- * Initialize the vocabulary trainer
- * @param {string} dataFile - Path to the JSON data file
- */
-async function initVocabTrainer(dataFile) {
-    // Get DOM elements
-    settingsDetailsEl = document.getElementById("settings");
-    prefLangEl = el("prefLang");
-    modeEl = el("mode");
-    strictEl = el("strict");
-    slowSpeakEl = el("slowSpeak");
-    studyEl = el("study");
-    pronounceEl = el("pronounce");
-    revealBtnEl = el("revealBtn");
-    setTitleFrEl = el("setTitleFr");
-    ruleCardEl = el("ruleCard");
-    ruleBodyEl = el("ruleBody");
-    ruleSummaryTitleEl = el("ruleSummaryTitle");
-    answerEl = el("answer");
-    feedbackEl = el("feedback");
-    extraEl = el("extra");
-    bigPromptEl = el("bigPrompt");
-    smallPromptEl = el("smallPrompt");
-    scorePillEl = el("scorePill");
-    formsBoxEl = el("formsBox");
-    formsHintEl = el("formsHint");
-    genderEls = { m: el("gender_m"), f: el("gender_f") };
-    qtyEls = { s: el("qty_s"), p: el("qty_p") };
-
-    // Setup event listeners
-    setupEventListeners();
-
-    // Load data and start
-    loadPreferredLanguage();
-    DATA_SET = await loadJsonSet(dataFile);
-
-    if (!DATA_SET) {
-        bigPromptEl.textContent = "Failed to load data";
-        return;
+        this.init(dataFileOrSet);
     }
 
-    updateLanguageUI();
-    applyFormsUI();
-    updateSetTitle();
-    renderRuleCard();
-    updateRevealButtonState();
-    setCard();
-    updateScore();
+    async init(dataFileOrSet) {
+        this.setupEventListeners();
+        this.loadPreferredLanguage();
 
-    // Pre-load speech voices
-    window.speechSynthesis?.getVoices?.();
-}
-
-function setupEventListeners() {
-    el("revealBtn").addEventListener("click", reveal);
-    el("checkBtn").addEventListener("click", check);
-    el("speakBtn").addEventListener("click", speak);
-    el("resetScoreBtn").addEventListener("click", resetScore);
-
-    modeEl.addEventListener("change", setCard);
-
-    studyEl.addEventListener("change", () => {
-        updateRevealButtonState();
-        if (studyEl.checked) {
-            if (!currentItem) setCard();
-            feedbackEl.textContent = "";
-            feedbackEl.className = "feedback";
-            reveal();
+        if (typeof dataFileOrSet === 'string') {
+           this.DATA_SET = await loadJsonSet(dataFileOrSet);
+        } else {
+           this.DATA_SET = dataFileOrSet;
         }
-    });
 
-    prefLangEl.addEventListener("change", () => {
-        savePreferredLanguage();
-        updateLanguageUI();
-        updateSetTitle();
-        renderRuleCard();
-        setCard();
-    });
+        if (!this.DATA_SET) {
+            if (this.bigPromptEl) this.bigPromptEl.textContent = "Failed to load data";
+            return;
+        }
 
-    // Form filter checkboxes
-    for (const cb of [
-        ...Object.values(genderEls),
-        ...Object.values(qtyEls)
-    ]) {
-        cb.addEventListener("change", () => {
-            answerEl.value = "";
-            feedbackEl.textContent = "";
-            extraEl.textContent = "";
-            setCard();
+        this.updateLanguageUI();
+        this.applyFormsUI();
+        this.updateSetTitle();
+        this.renderRuleCard();
+        this.updateRevealButtonState();
+        this.setCard();
+        this.updateScore();
+
+        // Pre-load speech voices
+        if (window.speechSynthesis) window.speechSynthesis.getVoices();
+    }
+
+    updateDataSet(set) {
+        this.DATA_SET = set;
+        this.wordsSeenSet.clear();
+        this.applyFormsUI();
+        this.updateSetTitle();
+        this.renderRuleCard();
+        this.setCard();
+    }
+
+    setupEventListeners() {
+        if (!this.revealBtnEl) return; // Prevent errors if elements don't exist
+        
+        this.revealBtnEl.addEventListener("click", () => this.reveal());
+        if(this.prevBtnEl) this.prevBtnEl.addEventListener("click", () => this.goPrevious());
+
+        this.checkBtnEl?.addEventListener("click", () => this.handleCheckBtn());
+        el("speakBtn")?.addEventListener("click", () => this.speak());
+        el("resetScoreBtn")?.addEventListener("click", () => this.resetScore());
+
+        this.modeEl?.addEventListener("change", () => this.setCard());
+
+        this.randomEl?.addEventListener("change", () => {
+             this.saveRandomPreference();
+             this.seqIndex = -1; // Reset sequential counter
+             this.setCard();
+        });
+
+        this.studyEl?.addEventListener("change", () => {
+            this.updateRevealButtonState();
+            if (this.studyEl.checked) {
+                document.body.classList.add("study-mode");
+                if (!this.currentItem) this.setCard();
+                this.feedbackEl.textContent = "";
+                this.feedbackEl.className = "feedback";
+                this.reveal();
+            } else {
+                document.body.classList.remove("study-mode");
+            }
+        });
+
+        this.prefLangEl?.addEventListener("change", () => {
+            this.savePreferredLanguage();
+            this.updateLanguageUI();
+            this.updateSetTitle();
+            this.renderRuleCard();
+            this.setCard();
+        });
+
+        const filterCbs = [...Object.values(this.genderEls), ...Object.values(this.qtyEls)];
+        for (const cb of filterCbs) {
+            if(cb) {
+                cb.addEventListener("change", () => {
+                    this.wordsSeenSet.clear();
+                    this.answerEl.value = "";
+                    this.feedbackEl.textContent = "";
+                    this.extraEl.textContent = "";
+                    this.setCard();
+                });
+            }
+        }
+
+        this.answerEl?.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") { e.preventDefault(); this.handleCheckBtn(); }
+        });
+
+        // Make sure we only attach global listener once. Since this class might be instantiated multiple times if changing pages, we need to be careful. But usually it's one per page.
+        document.addEventListener("keydown", (e) => {
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+            const active = document.activeElement;
+            const isEditable = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable);
+
+            if (isEditable) {
+                const isAnswerInput = active === this.answerEl;
+                if (!(isAnswerInput && this.allowHotkeysInAnswer)) return;
+            }
+
+            switch (e.key.toLowerCase()) {
+                case "n": e.preventDefault(); this.setCard(); break;
+                case "p": e.preventDefault(); this.goPrevious(); break;
+                case "r": e.preventDefault(); this.reveal(); break;
+                case "s": e.preventDefault(); this.speak(); break;
+                case "x": e.preventDefault(); this.resetScore(); break;
+            }
         });
     }
 
-    // Keyboard shortcuts
-    answerEl.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") { e.preventDefault(); check(); }
-    });
+    updateLanguageUI() {
+        if (!this.prefLangEl || !this.modeEl) return;
+        const lang = this.prefLangEl.value || "en";
+        const langLabel = LANG_LABELS[lang] || lang;
+        const optA = this.modeEl.querySelector('option[value="promptA_to_answerB"]');
+        const optB = this.modeEl.querySelector('option[value="promptB_to_answerA"]');
+        if (optA) optA.textContent = `${langLabel} → Français`;
+        if (optB) optB.textContent = `Français → ${langLabel}`;
+    }
 
-    document.addEventListener("keydown", (e) => {
-        if (e.ctrlKey || e.metaKey || e.altKey) return;
+    shouldAutoReveal() { return !!this.studyEl?.checked; }
+    shouldAutoPronounce() { return !!this.pronounceEl?.checked; }
 
-        const active = document.activeElement;
-        const isEditable =
-            active &&
-            (active.tagName === "INPUT" ||
-                active.tagName === "TEXTAREA" ||
-                active.isContentEditable);
+    updateRevealButtonState() {
+        if (!this.revealBtnEl) return;
+        const isStudy = !!this.studyEl?.checked;
+        this.revealBtnEl.disabled = isStudy;
+        this.revealBtnEl.classList.toggle("disabled", isStudy);
+    }
 
-        if (isEditable) {
-            const isAnswerInput = active === answerEl;
-            if (!(isAnswerInput && allowHotkeysInAnswer)) return;
+    norm(s) {
+        const strict = this.strictEl?.value === "yes";
+        return strict ? window.normaliseStrict(s) : window.normaliseLoose(s);
+    }
+
+    getEnabledForms() {
+        const gendersChecked = Object.entries(this.genderEls).filter(([, cb]) => cb && !cb.disabled && cb.checked).map(([k]) => k);
+        const qtyChecked = Object.entries(this.qtyEls).filter(([, cb]) => cb && !cb.disabled && cb.checked).map(([k]) => k);
+        const genders = (gendersChecked.length === 0) ? ["m", "f"] : gendersChecked;
+        const qtys = (qtyChecked.length === 0) ? ["s", "p"] : qtyChecked;
+
+        const result = [];
+        for (const g of genders) {
+            for (const q of qtys) {
+                if (g === "m" && q === "s") result.push("ms");
+                if (g === "f" && q === "s") result.push("fs");
+                if (g === "m" && q === "p") result.push("mp");
+                if (g === "f" && q === "p") result.push("fp");
+            }
         }
+        return result;
+    }
 
-        switch (e.key.toLowerCase()) {
-            case "n": e.preventDefault(); setCard(); break;
-            case "r": e.preventDefault(); reveal(); break;
-            case "s": e.preventDefault(); speak(); break;
-            case "x": e.preventDefault(); resetScore(); break;
-        }
-    });
-}
+    applyFormsUI() {
+        if (!this.formsBoxEl) return;
+        const supports = !!this.DATA_SET?.supportsForms;
+        this.formsBoxEl.style.display = "";
+        this.formsBoxEl.style.opacity = supports ? "1" : "0.5";
 
-function updateLanguageUI() {
-    const lang = prefLangEl.value || "en";
-    const langLabel = LANG_LABELS[lang] || lang;
+        for (const cb of Object.values(this.genderEls)) if (cb) cb.disabled = !supports;
+        for (const cb of Object.values(this.qtyEls)) if (cb) cb.disabled = !supports;
 
-    const optA = modeEl.querySelector('option[value="promptA_to_answerB"]');
-    const optB = modeEl.querySelector('option[value="promptB_to_answerA"]');
-
-    if (optA) optA.textContent = `${langLabel} → Français`;
-    if (optB) optB.textContent = `Français → ${langLabel}`;
-}
-
-function shouldAutoReveal() {
-    return !!studyEl?.checked;
-}
-
-function shouldAutoPronounce() {
-    return !!pronounceEl?.checked;
-}
-
-function updateRevealButtonState() {
-    const isStudy = !!studyEl?.checked;
-    revealBtnEl.disabled = isStudy;
-    revealBtnEl.classList.toggle("disabled", isStudy);
-}
-
-function norm(s) {
-    const strict = strictEl.value === "yes";
-    return strict ? normaliseStrict(s) : normaliseLoose(s);
-}
-
-function getEnabledForms() {
-    const gendersChecked = Object.entries(genderEls)
-        .filter(([, cb]) => !cb.disabled && cb.checked)
-        .map(([k]) => k);
-
-    const qtyChecked = Object.entries(qtyEls)
-        .filter(([, cb]) => !cb.disabled && cb.checked)
-        .map(([k]) => k);
-
-    const genders = (gendersChecked.length === 0) ? ["m", "f"] : gendersChecked;
-    const qtys = (qtyChecked.length === 0) ? ["s", "p"] : qtyChecked;
-
-    const result = [];
-    for (const g of genders) {
-        for (const q of qtys) {
-            if (g === "m" && q === "s") result.push("ms");
-            if (g === "f" && q === "s") result.push("fs");
-            if (g === "m" && q === "p") result.push("mp");
-            if (g === "f" && q === "p") result.push("fp");
+        if (supports) {
+            for (const cb of Object.values(this.genderEls)) if (cb) cb.checked = false;
+            for (const cb of Object.values(this.qtyEls)) if (cb) cb.checked = false;
+            if (this.qtyEls.s) this.qtyEls.s.checked = true;
+            this.formsHintEl.textContent = "Select Gender and/or Quantity. If nothing is selected, it practises all forms.";
+        } else {
+            this.formsHintEl.textContent = "";
         }
     }
-    return result;
-}
 
-function applyFormsUI() {
-    const supports = !!DATA_SET?.supportsForms;
-
-    formsBoxEl.style.display = "";
-    formsBoxEl.style.opacity = supports ? "1" : "0.5";
-
-    for (const cb of Object.values(genderEls)) cb.disabled = !supports;
-    for (const cb of Object.values(qtyEls)) cb.disabled = !supports;
-
-    if (supports) {
-        for (const cb of Object.values(genderEls)) cb.checked = false;
-        for (const cb of Object.values(qtyEls)) cb.checked = false;
-
-        formsHintEl.textContent =
-            "Select Gender and/or Quantity. If nothing is selected, it practises all forms.";
-    } else {
-        formsHintEl.textContent = "";
-    }
-}
-
-function updateSetTitle() {
-    setTitleFrEl.textContent = DATA_SET?.nameFr || DATA_SET?.name || "";
-}
-
-function getMeaning(item, formKeyOverride) {
-    const lang = prefLangEl.value || "en";
-    const form = formKeyOverride || currentFormKey || "ms";
-
-    // New schema with eng/ru objects
-    if (item && (item.eng || item.ru)) {
-        if (lang === "ru" && item.ru) return item.ru[form] ?? item.ru.ms ?? item.ru.fs ?? "";
-        if (lang === "en" && item.eng) return item.eng[form] ?? item.eng.ms ?? item.eng.fs ?? "";
-        if (item.eng) return item.eng[form] ?? item.eng.ms ?? item.eng.fs ?? "";
-        if (item.ru) return item.ru[form] ?? item.ru.ms ?? item.ru.fs ?? "";
+    updateSetTitle() {
+        if(this.setTitleFrEl) this.setTitleFrEl.textContent = this.DATA_SET?.nameFr || this.DATA_SET?.name || "";
     }
 
-    // Old schema with a/a_ru
-    if (lang === "ru" && item.a_ru) return item.a_ru;
-    if (item.a) return item.a;
-    return "";
-}
+    getMeaning(item, formKeyOverride) {
+        const lang = this.prefLangEl?.value || "en";
+        const form = formKeyOverride || this.currentFormKey || "ms";
 
-function getPreferredLangLabel() {
-    const lang = prefLangEl.value || "en";
-    return LANG_LABELS[lang] || "English";
-}
+        if (item && (item.eng || item.ru)) {
+            if (lang === "ru" && item.ru) return item.ru[form] ?? item.ru.ms ?? item.ru.fs ?? "";
+            if (lang === "en" && item.eng) return item.eng[form] ?? item.eng.ms ?? item.eng.fs ?? "";
+            if (item.eng) return item.eng[form] ?? item.eng.ms ?? item.eng.fs ?? "";
+            if (item.ru) return item.ru[form] ?? item.ru.ms ?? item.ru.fs ?? "";
+        }
 
-function getFormLabel(formKey) {
-    const lang = prefLangEl.value || "en";
-    const labels = (lang === "ru") ? FORM_LABELS_RU : FORM_LABELS_EN;
-    return labels?.[formKey] || "";
-}
-
-function setCard() {
-    if (!DATA_SET || !DATA_SET.items.length) return;
-
-    // Filter items that have the selected forms
-    const enabledForms = getEnabledForms();
-    const validItems = DATA_SET.items.filter(item => {
-        if (!item.forms) return true;
-        return enabledForms.some(f => item.forms[f]);
-    });
-
-    if (validItems.length === 0) {
-        bigPromptEl.textContent = "No items match selected filters";
-        smallPromptEl.textContent = "";
-        return;
+        if (lang === "ru" && item.a_ru) return item.a_ru;
+        if (item.a) return item.a;
+        return "";
     }
 
-    currentItem = pick(validItems);
-    currentFormLabel = "";
-    currentExpectedForms = [];
-
-    if (DATA_SET.supportsForms && currentItem.forms) {
-        // Get forms that exist for this item AND are enabled
-        const itemForms = enabledForms.filter(f => currentItem.forms[f]);
-        const chosenForm = pick(itemForms);
-        currentFormKey = chosenForm;
-
-        const formValue = currentItem.forms[chosenForm];
-        currentExpectedForms = Array.isArray(formValue) ? formValue : [formValue];
-        currentFrench = pick(currentExpectedForms);
-        currentFormLabel = getFormLabel(chosenForm);
-    } else {
-        currentFormKey = null;
-        currentFrench = currentItem.b ?? currentItem.fr ?? "";
-        currentExpectedForms = [currentFrench];
+    getPreferredLangLabel() {
+        const lang = this.prefLangEl?.value || "en";
+        return LANG_LABELS[lang] || "English";
     }
 
-    const mode = modeEl.value;
-
-    if (mode === "promptA_to_answerB") {
-        const hint = currentFormLabel ? ` (${currentFormLabel})` : "";
-        bigPromptEl.textContent = getMeaning(currentItem, currentFormKey) + hint;
-        smallPromptEl.textContent = "";
-        answerEl.placeholder = "Type the French…";
-    } else {
-        bigPromptEl.textContent = "";
-        smallPromptEl.textContent = currentFrench;
-        answerEl.placeholder = `Type in ${getPreferredLangLabel()}…`;
+    getFormLabel(formKey) {
+        const lang = this.prefLangEl?.value || "en";
+        const labels = (lang === "ru") ? this.FORM_LABELS_RU : this.FORM_LABELS_EN;
+        return labels?.[formKey] || "";
     }
 
-    answerEl.value = "";
-    allowHotkeysInAnswer = false;
-    answerEl.focus();
+    setCard(navigateOpts = {}) {
+        if (!this.DATA_SET || !this.DATA_SET.items || !this.DATA_SET.items.length) return;
 
-    if (shouldAutoReveal()) {
-        reveal();
+        const enabledForms = this.getEnabledForms();
+        const validItems = this.DATA_SET.items.filter(item => {
+            if (!item.forms) return true;
+            return enabledForms.some(f => item.forms[f]);
+        });
+
+        if (validItems.length === 0) {
+            if(this.bigPromptEl) this.bigPromptEl.textContent = "No items match selected filters";
+            if(this.smallPromptEl) this.smallPromptEl.textContent = "";
+            return;
+        }
+
+        this.currentValidItems = validItems; // keep for progress tracking
+
+        // --- History Navigation ---
+        if (navigateOpts.goBack) {
+            if (this.historyIndex > 0) {
+                this.historyIndex--;
+                this.applyStateFromHistory(this.history[this.historyIndex]);
+            }
+            return;
+        }
+
+        // Moving forward: if we were mid-history, truncate the future
+        if (this.historyIndex < this.history.length - 1 && this.historyIndex >= 0) {
+            this.history = this.history.slice(0, this.historyIndex + 1);
+        }
+
+        const isRandom = !!this.randomEl?.checked;
+        
+        if (isRandom) {
+            this.currentItem = pick(validItems);
+        } else {
+            this.seqIndex = (this.seqIndex + 1) % validItems.length;
+            this.currentItem = validItems[this.seqIndex];
+        }
+
+        this.currentFormLabel = "";
+        this.currentExpectedForms = [];
+
+        if (this.DATA_SET.supportsForms && this.currentItem.forms) {
+            const itemForms = enabledForms.filter(f => this.currentItem.forms[f]);
+            const chosenForm = pick(itemForms);
+            this.currentFormKey = chosenForm;
+            const formValue = this.currentItem.forms[chosenForm];
+            this.currentExpectedForms = Array.isArray(formValue) ? formValue : [formValue];
+            this.currentFrench = pick(this.currentExpectedForms);
+            this.currentFormLabel = this.getFormLabel(chosenForm);
+        } else {
+            this.currentFormKey = null;
+            this.currentFrench = this.currentItem.b ?? this.currentItem.fr ?? "";
+            this.currentExpectedForms = [this.currentFrench];
+        }
+
+        // Push new state to history
+        this.history.push({
+            item: this.currentItem,
+            formKey: this.currentFormKey,
+            french: this.currentFrench,
+            expectedForms: [...this.currentExpectedForms],
+            formLabel: this.currentFormLabel
+        });
+        this.historyIndex = this.history.length - 1;
+
+        this.renderCard();
     }
 
-    if (shouldAutoPronounce()) {
-        speak();
-    }
-}
-
-function updateScore() {
-    scorePillEl.textContent = `Score: ${correct}/${total}`;
-}
-
-function reveal() {
-    if (!currentItem) return;
-    const mode = modeEl.value;
-
-    const hint = currentFormLabel ? ` (${currentFormLabel})` : "";
-    bigPromptEl.textContent = getMeaning(currentItem, currentFormKey) + hint;
-
-    if (mode === "promptA_to_answerB") {
-        smallPromptEl.textContent = currentFrench;
-        extraEl.innerHTML =
-            `Expected: <span class="expected">${currentExpectedForms.join(" / ")}</span>` +
-            ` [${getMeaning(currentItem, currentFormKey)}${hint}]`;
-    } else {
-        extraEl.innerHTML =
-            `Expected: <span class="expected">${getMeaning(currentItem, currentFormKey)}</span>` +
-            ` [${currentFrench}${hint}]`;
-    }
-}
-
-function check() {
-    foldSettings(settingsDetailsEl);
-    if (!currentItem) return;
-
-    const mode = modeEl.value;
-    const user = norm(answerEl.value);
-
-    const ok = (mode === "promptA_to_answerB")
-        ? currentExpectedForms.map(norm).includes(user)
-        : norm(getMeaning(currentItem)) === user;
-
-    total += 1;
-    if (ok) correct += 1;
-
-    updateScore();
-
-    if (shouldAutoReveal()) {
-        setCard();
-        return;
+    applyStateFromHistory(state) {
+        this.currentItem = state.item;
+        this.currentFormKey = state.formKey;
+        this.currentFrench = state.french;
+        this.currentExpectedForms = [...state.expectedForms];
+        this.currentFormLabel = state.formLabel;
+        this.renderCard();
     }
 
-    feedbackEl.textContent = ok ? "✓ Correct!" : "✖ Not quite.";
-    feedbackEl.className = "feedback " + (ok ? "ok" : "bad");
+    renderCard() {
+        const mode = this.modeEl?.value;
+        const isStudy = !!this.studyEl?.checked;
+        const extraHint = this.currentFormLabel ? ` (${this.currentFormLabel})` : "";
+        const meaningWithHint = this.getMeaning(this.currentItem, this.currentFormKey) + extraHint;
 
-    reveal();
-    allowHotkeysInAnswer = true;
+        if (isStudy) {
+            if (mode === "promptA_to_answerB") {
+                this.bigPromptEl.innerHTML = formatHints(meaningWithHint);
+                this.smallPromptEl.innerHTML = formatHints(this.currentFrench);
+            } else {
+                this.bigPromptEl.innerHTML = formatHints(this.currentFrench);
+                this.smallPromptEl.innerHTML = formatHints(meaningWithHint);
+            }
+            this.answerEl.placeholder = "Study mode…";
+        } else if (mode === "promptA_to_answerB") {
+            this.bigPromptEl.innerHTML = formatHints(meaningWithHint);
+            this.smallPromptEl.textContent = "";
+            this.answerEl.placeholder = "Type the French…";
+        } else {
+            this.bigPromptEl.textContent = "";
+            this.smallPromptEl.innerHTML = formatHints(this.currentFrench);
+            this.answerEl.placeholder = `Type in ${this.getPreferredLangLabel()}…`;
+        }
 
-    setCard();
-}
+        this.answerEl.value = "";
+        this.allowHotkeysInAnswer = false;
+        if (this.checkBtnEl) {
+            this.checkBtnEl.textContent = "Check";
+            this.checkBtnEl.title = "press (enter) to check";
+        }
+        this.isChecked = false;
+        this.answerEl.focus();
 
-function resetScore() {
-    total = 0; correct = 0;
-    updateScore();
-    feedbackEl.textContent = "Score cleared.";
-    feedbackEl.className = "feedback muted";
-}
+        // Reset feedback on new card
+        if (this.feedbackEl) { this.feedbackEl.textContent = ""; this.feedbackEl.className = "feedback"; }
+        if (this.extraEl) this.extraEl.innerHTML = "";
 
-function speak() {
-    if (!currentFrench) return;
-    const slow = !!slowSpeakEl?.checked;
-    speakFrench(currentFrench, slow);
-}
+        this.updateProgress();
 
-function loadPreferredLanguage() {
-    const saved = localStorage.getItem(LS_PREF_LANG_KEY);
-    if (saved) prefLangEl.value = saved;
-}
-
-function savePreferredLanguage() {
-    localStorage.setItem(LS_PREF_LANG_KEY, prefLangEl.value || "en");
-}
-
-// Rule card rendering
-function fmtExampleValue(v) {
-    if (Array.isArray(v)) return v.join(" / ");
-    return v ?? "";
-}
-
-function fmtExample(ex) {
-    const lang = prefLangEl.value || "en";
-    const labels = (lang === "ru") ? FORM_LABELS_RU : FORM_LABELS_EN;
-
-    let html = '<div class="rule-grid">';
-    if (ex.ms) html += `<div><b>${labels.ms}</b></div><div class="rule-code">${fmtExampleValue(ex.ms)}</div>`;
-    if (ex.fs) html += `<div><b>${labels.fs}</b></div><div class="rule-code">${fmtExampleValue(ex.fs)}</div>`;
-    if (ex.mp) html += `<div><b>${labels.mp}</b></div><div class="rule-code">${fmtExampleValue(ex.mp)}</div>`;
-    if (ex.fp) html += `<div><b>${labels.fp}</b></div><div class="rule-code">${fmtExampleValue(ex.fp)}</div>`;
-    html += '</div>';
-    return html;
-}
-
-function renderRuleCard() {
-    const rule = DATA_SET?.rule;
-
-    if (!rule) {
-        ruleCardEl.style.display = "none";
-        ruleBodyEl.innerHTML = "";
-        return;
+        if (this.shouldAutoReveal()) this.reveal();
+        if (this.shouldAutoPronounce()) this.speak();
     }
 
-    ruleCardEl.style.display = "";
-    const lang = prefLangEl.value || "en";
+    next() {
+        this.setCard();
+    }
 
-    ruleSummaryTitleEl.textContent = rule.source_fr;
+    goPrevious() {
+        this.setCard({ goBack: true });
+    }
 
-    const summary =
-        (lang === "ru" && rule.summary_ru) ? rule.summary_ru :
-            (lang === "en" && rule.summary_eng) ? rule.summary_eng :
-                rule.summary_fr || rule.summary_eng || rule.summary_ru || "";
+    updateScore() {
+        if(this.scorePillEl) this.scorePillEl.textContent = `Score: ${this.correct}/${this.total}`;
+    }
 
-    const patternLabel = (lang === "ru") ? "Шаблон" : "Pattern";
-    const exampleLabel = (lang === "ru") ? "Примеры" : "Examples";
+    updateProgress() {
+        if (!this.progressPillEl) return;
+        const total = this.currentValidItems?.length ?? this.DATA_SET?.items?.length ?? 0;
+        const done = Math.min(this.wordsSeenSet.size, total);
+        this.progressPillEl.textContent = `Words: ${done}/${total}`;
+    }
 
-    const patternsHtml = (rule.patterns || []).map((p) => {
-        const badge = p.type ? `<span class="rule-badge">${p.type}</span>` : "";
+    reveal() {
+        if (!this.currentItem) return;
 
-        const grammar =
-            (lang === "ru" && p.grammar_ru) ? p.grammar_ru :
-                (lang === "en" && p.grammar_eng) ? p.grammar_eng :
-                    (p.grammar_eng || p.grammar_ru || "");
+        const key = this.currentFrench || JSON.stringify(this.currentItem);
+        this.wordsSeenSet.add(key);
+        this.updateProgress();
 
-        const examples = (p.examples || []).map(fmtExample).join("");
+        const isStudy = !!this.studyEl?.checked;
+        const mode = this.modeEl?.value;
+        const extraHint = this.currentFormLabel ? ` (${this.currentFormLabel})` : "";
+        const meaningWithHint = this.getMeaning(this.currentItem, this.currentFormKey) + extraHint;
 
-        return `
-            <div class="rule-section">
-                <li><b>${patternLabel}:</b><span class="expected">${badge}</span></li>
-                <div class="rule-subtitle">${grammar}</div>
-                ${examples ? `<div class="tiny"><b>${exampleLabel}</b>${examples}</div>` : ""}
-            </div>
-        `;
-    }).join("");
+        if (isStudy) {
+            if (mode === "promptA_to_answerB") {
+                this.bigPromptEl.innerHTML = formatHints(meaningWithHint);
+                this.smallPromptEl.innerHTML = formatHints(this.currentFrench);
+            } else {
+                this.bigPromptEl.innerHTML = formatHints(this.currentFrench);
+                this.smallPromptEl.innerHTML = formatHints(meaningWithHint);
+            }
+            this.extraEl.innerHTML = "";
+            return;
+        }
 
-    ruleBodyEl.innerHTML = `
-        <div class="tiny">${summary}</div>
-        <ol>${patternsHtml}</ol>
-    `;
+        this.bigPromptEl.innerHTML = formatHints(meaningWithHint);
+
+        if (mode === "promptA_to_answerB") {
+            this.smallPromptEl.innerHTML = formatHints(this.currentFrench);
+            const expected = this.currentExpectedForms.map(f => escapeHtml(f)).join(" / ");
+            this.extraEl.innerHTML = `Expected: <span class="expected">${expected}</span> <br>[${escapeHtml(meaningWithHint)}]`;
+        } else {
+            const expected = escapeHtml(this.getMeaning(this.currentItem, this.currentFormKey));
+            this.extraEl.innerHTML = `Expected: <span class="expected">${expected}</span> <br>[${escapeHtml(this.currentFrench + extraHint)}]`;
+        }
+    }
+
+    handleCheckBtn() {
+        if (this.isChecked) {
+            this.next();
+        } else {
+            this.check();
+        }
+    }
+
+    check() {
+        if(window.foldSettings && this.settingsDetailsEl) foldSettings(this.settingsDetailsEl);
+        if (!this.currentItem) return;
+
+        const mode = this.modeEl?.value;
+        const user = this.norm(this.answerEl.value);
+
+        const ok = (mode === "promptA_to_answerB")
+            ? this.currentExpectedForms.map(f => this.norm(f)).includes(user)
+            : this.norm(this.getMeaning(this.currentItem)) === user;
+
+        this.total += 1;
+        if (ok) this.correct += 1;
+
+        this.updateScore();
+
+        if (this.shouldAutoReveal()) {
+            this.setCard();
+            return;
+        }
+
+        this.feedbackEl.textContent = ok ? "✓" : "✖";
+        this.feedbackEl.className = "feedback " + (ok ? "ok" : "bad");
+        this.reveal();
+        this.allowHotkeysInAnswer = true;
+        if (this.checkBtnEl) {
+            this.checkBtnEl.textContent = "Next";
+            this.checkBtnEl.title = "press (enter) for new card";
+        }
+        this.isChecked = true;
+    }
+
+    resetScore() {
+        this.total = 0; this.correct = 0;
+        this.updateScore();
+        if(this.feedbackEl) {
+            this.feedbackEl.textContent = "Score cleared.";
+            this.feedbackEl.className = "feedback muted";
+        }
+    }
+
+    speak() {
+        if (!this.currentFrench) return;
+        const slow = !!this.slowSpeakEl?.checked;
+        if(window.speakFrench) speakFrench(this.currentFrench, slow);
+    }
+
+    loadPreferredLanguage() {
+        const saved = localStorage.getItem(this.LS_PREF_LANG_KEY);
+        if (saved && this.prefLangEl) this.prefLangEl.value = saved;
+        
+        const randomSaved = localStorage.getItem("ft_random");
+        if (randomSaved !== null && this.randomEl) {
+            this.randomEl.checked = randomSaved === "true";
+        }
+    }
+
+    savePreferredLanguage() {
+        if(this.prefLangEl) localStorage.setItem(this.LS_PREF_LANG_KEY, this.prefLangEl.value || "en");
+    }
+
+    saveRandomPreference() {
+        if(this.randomEl) localStorage.setItem("ft_random", String(this.randomEl.checked));
+    }
+
+    fmtExampleValue(v) { return Array.isArray(v) ? v.join(" / ") : (v ?? ""); }
+
+    fmtExample(ex) {
+        const lang = this.prefLangEl?.value || "en";
+        const labels = (lang === "ru") ? this.FORM_LABELS_RU : this.FORM_LABELS_EN;
+        let html = '<div class="rule-grid">';
+        if (ex.ms) html += `<div><b>${labels.ms}</b></div><div class="rule-code">${this.fmtExampleValue(ex.ms)}</div>`;
+        if (ex.fs) html += `<div><b>${labels.fs}</b></div><div class="rule-code">${this.fmtExampleValue(ex.fs)}</div>`;
+        if (ex.mp) html += `<div><b>${labels.mp}</b></div><div class="rule-code">${this.fmtExampleValue(ex.mp)}</div>`;
+        if (ex.fp) html += `<div><b>${labels.fp}</b></div><div class="rule-code">${this.fmtExampleValue(ex.fp)}</div>`;
+        html += '</div>';
+        return html;
+    }
+
+    renderRuleCard() {
+        const rule = this.DATA_SET?.rule;
+        if (!rule) {
+            if(this.ruleCardEl) this.ruleCardEl.style.display = "none";
+            if(this.ruleBodyEl) this.ruleBodyEl.innerHTML = "";
+            return;
+        }
+
+        if(this.ruleCardEl) this.ruleCardEl.style.display = "";
+        const lang = this.prefLangEl?.value || "en";
+
+        if(this.ruleSummaryTitleEl) this.ruleSummaryTitleEl.textContent = rule.source_fr;
+
+        const summary = (lang === "ru" && rule.summary_ru) ? rule.summary_ru : (lang === "en" && rule.summary_eng) ? rule.summary_eng : rule.summary_fr || rule.summary_eng || rule.summary_ru || "";
+        const patternLabel = (lang === "ru") ? "Шаблон" : "Pattern";
+        const exampleLabel = (lang === "ru") ? "Примеры" : "Examples";
+
+        const patternsHtml = (rule.patterns || []).map((p) => {
+            const badge = p.type ? `<span class="rule-badge">${p.type}</span>` : "";
+            const grammar = (lang === "ru" && p.grammar_ru) ? p.grammar_ru : (lang === "en" && p.grammar_eng) ? p.grammar_eng : (p.grammar_eng || p.grammar_ru || "");
+            const examples = (p.examples || []).map(e => this.fmtExample(e)).join("");
+            return `<div class="rule-section"><li><b>${patternLabel}:</b><span class="expected">${badge}</span></li><div class="rule-subtitle">${grammar}</div>${examples ? `<div class="tiny"><b>${exampleLabel}</b>${examples}</div>` : ""}</div>`;
+        }).join("");
+
+        if(this.ruleBodyEl) this.ruleBodyEl.innerHTML = `<div class="tiny">${summary}</div><ol>${patternsHtml}</ol>`;
+    }
 }

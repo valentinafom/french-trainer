@@ -1,4 +1,4 @@
-{
+window.DATA_SET = {
   "id": "animals",
   "name": "Animals",
   "name_ru": "Животные",
@@ -312,3 +312,4 @@
     }
   ]
 }
+;

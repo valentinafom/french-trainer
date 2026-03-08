@@ -1,5 +1,16 @@
 // Common utility functions for French Trainer
 
+// PWA Service Worker Registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then(registration => {
+      console.log('SW registered: ', registration);
+    }).catch(registrationError => {
+      console.log('SW registration failed: ', registrationError);
+    });
+  });
+}
+
 // DOM helper
 const el = (id) => document.getElementById(id);
 
@@ -39,6 +50,13 @@ function escapeHtml(s) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
+}
+
+// Format text in parentheses as hints
+function formatHints(text) {
+  if (!text) return "";
+  // First escape HTML to be safe, then wrap parenthesized content
+  return escapeHtml(String(text)).replace(/\(([^)]+)\)/g, '<span class="hint">($1)</span>');
 }
 
 // Settings collapse
@@ -123,17 +141,20 @@ function saveToStorage(key, value) {
 
 // JSON data loading with error handling
 async function loadJsonSet(path) {
-  try {
-    const res = await fetch(path);
-    if (!res.ok) {
-      console.error(`Failed to load ${path}: ${res.status} ${res.statusText}`);
-      return null;
-    }
-    return await res.json();
-  } catch (err) {
-    console.error(`Error loading ${path}:`, err);
-    return null;
-  }
+  return new Promise((resolve, reject) => {
+    // If we're loading a top level json file, change to .js
+    path = path.replace('.json', '.js');
+    const script = document.createElement("script");
+    script.src = path;
+    script.onload = () => {
+      resolve(DATA_SET);
+    };
+    script.onerror = () => {
+      console.error(`Failed to load ${path}`);
+      resolve(null); 
+    };
+    document.head.appendChild(script);
+  });
 }
 
 // Language labels
@@ -147,7 +168,7 @@ const LANG_LABELS = {
 // labelFull: used on index.html buttons
 const NAV_PAGES = [
   { id: "french-numbers", href: "french-numbers.html", labelShort: "Numbers", labelFull: "French numbers" },
-  { id: "vocab", href: "vocab.html", labelShort: "Vocab", labelFull: "Basic vocabulary" },
+  { id: "vocab", href: "vocab.html", labelShort: "Vocab", labelFull: "Thematic vocabulary" },
   { id: "verbs", href: "verbs.html", labelShort: "Verbs", labelFull: "Verbs (Present Tense)" },
   { id: "animals", href: "animals.html", labelShort: "Animals", labelFull: "Animals" }
 ];
@@ -164,14 +185,13 @@ function buildNavbar() {
   // Clear existing content
   dropdownContent.innerHTML = "";
 
-  // Add links for all pages except current and Numbers (which is in main nav)
+  // Add links for all pages except current
   for (const page of NAV_PAGES) {
     if (page.href === currentPage) continue;
-    if (page.id === "french-numbers") continue; // Already in main nav
 
     const link = document.createElement("a");
     link.href = page.href;
-    link.textContent = page.labelShort;
+    link.textContent = page.labelFull;
     dropdownContent.appendChild(link);
   }
 }
@@ -287,4 +307,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, 2000);
 });
+
+// -----------------------------
+// Mobile UI: Move topic selector
+// -----------------------------
+function setupMobileTopicMover() {
+    const mobileAnchor = document.getElementById("mobileTopicAnchor");
+    const labelEl = document.getElementById("currentTopicLabel");
+    if (!mobileAnchor || !labelEl) return;
+    
+    const dropdown = labelEl.closest(".dropdown");
+    const desktopAnchor = document.querySelector(".controls-container");
+    
+    if (!dropdown || !desktopAnchor) return;
+
+    const moveTopicDropdown = () => {
+        const isMobile = window.matchMedia("(max-width: 600px)").matches;
+        
+        if (isMobile && dropdown.parentElement !== mobileAnchor) {
+            mobileAnchor.appendChild(dropdown);
+            mobileAnchor.style.display = "block";
+            // Set margin so it looks nice inside settings
+            dropdown.style.display = "block";
+        } else if (!isMobile && dropdown.parentElement !== desktopAnchor) {
+            desktopAnchor.insertBefore(dropdown, desktopAnchor.firstChild);
+            mobileAnchor.style.display = "none";
+            dropdown.style.display = "inline-block";
+        }
+    };
+
+    window.addEventListener("resize", moveTopicDropdown);
+    moveTopicDropdown();
+}
+
+document.addEventListener("DOMContentLoaded", setupMobileTopicMover);
 

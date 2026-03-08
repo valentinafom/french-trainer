@@ -1,4 +1,4 @@
-{
+window.DATA_SET = {
   "id": "verbs",
   "name": "Verbs",
   "name_ru": "Глаголы",
@@ -1132,4 +1132,4 @@
       }
     }
   ]
-}
+};

@@ -4,6 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#FFFFE3" />
+    <link rel="manifest" href="manifest.json" />
     <title>Les verbes</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,7 +16,6 @@
     <div class="wrap">
         <div class="navbar">
             <a href="index.html">Home</a>
-            <a href="french-numbers.html">Numbers</a>
             <div class="dropdown">
                 <button class="dropbtn">Other exercises</button>
                 <div class="dropdown-content">
@@ -65,6 +66,7 @@
                         </select>
                     </div>
                 </div>
+                <div id="mobileTopicAnchor" style="display: none; margin-top: 12px;"></div>
                 <div id="formsBox" style="margin-top:12px;">
                     <div class="tiny" style="margin-bottom:8px; font-weight:700;">Verb group filters</div>
 
@@ -97,6 +99,25 @@
                     <div class="tiny" style="margin-top:8px;" id="formsHint"></div>
                 </div>
 
+                <div class="row" style="margin-top:14px; flex-wrap:wrap; gap:8px;">
+                    <label class="score-control chk" title="Study mode - auto reveal answers">
+                        <input type="checkbox" id="study" />
+                        Study mode
+                    </label>
+                    <label class="score-control chk" title="Random order">
+                        <input type="checkbox" id="random" />
+                        Random
+                    </label>
+                    <label class="score-control chk" title="Speak slower">
+                        <input type="checkbox" id="slowSpeak" />
+                        Slow
+                    </label>
+                    <label class="score-control chk" title="Auto pronounce French">
+                        <input type="checkbox" id="pronounce" />
+                        Pronounce
+                    </label>
+                </div>
+
 
             </details>
         </div>
@@ -105,40 +126,29 @@
             <!-- Set name (French) -->
             <div class="set-title" id="setTitleFr"></div>
 
-            <div class="row" style="margin-top:12px;">
-                <div class="score-control" title="Press X to reset score">
-                    <span id="scorePill">Words: 0/0</span>
-                    <button id="resetScoreBtn" type="button" aria-label="Reset score">✖</button>
-                </div>
-
-                <label class="score-control chk" title="Speak slower">
-                    <input type="checkbox" id="slowSpeak" />
-                    Slow
-                </label>
-
-                <label class="score-control chk" title="Study">
-                    <input type="checkbox" id="study" />
-                    Study mode
-                </label>
-
-                <label class="score-control chk" title="Auto pronounce French">
-                    <input type="checkbox" id="pronounce" />
-                    Pronounce
-                </label>
+            <div class="row controls-container" style="margin-top:12px;">
 
                 <div class="dropdown">
-                    <button onclick="toggleTopics()" class="dropbtn">
+                    <button onclick="toggleTopics()" class="dropbtn" style="padding: 8px 12px;">
                         <span id="currentTopicLabel">Topics</span> ▾
                     </button>
                     <div id="topicsDropdown" class="dropdown-content">
                         <!-- Topics will be populated by JavaScript -->
                     </div>
                 </div>
+
+                <div class="score-control">
+                    <span id="scorePill">Score: 0/0</span>
+                </div>
+                <div class="score-control" title="Press X to reset score">
+                    <span id="progressPill">Verbs: 0/0</span>
+                    <button id="resetScoreBtn" type="button" aria-label="Reset score">✖</button>
+                </div>
             </div>
 
             <div id="promptArea" style="margin-top: 14px;">
                 <div class="big" id="bigPrompt"></div>
-                <div class="small" id="smallPrompt"></div>
+                <div class="small" id="smallPrompt" style="margin-top: 12px;"></div>
             </div>
 
             <div id="currentRow" class="row" style="margin-top:12px;">
@@ -149,22 +159,25 @@
 
                 <span id="pronounLabel" class="score-control" style="display:none;">je</span>
                 <input id="answer" type="text" placeholder="Type your answer…" autocomplete="off" />
-                <button id="checkBtn" title="press (enter) to check / press (n) for new card" type="button">
-                    Check / Next
+                <button id="checkBtn" title="press (enter) to check" type="button">
+                    Check
                 </button>
             </div>
 
-            <div id="prevRow">
+            <div id="prevRow" class="prev-row">
                 <div class="feedback" id="feedback"></div>
                 <div class="tiny" id="prevExtra"></div>
                 <div class="grammar" id="grammarComment"></div>
             </div>
 
-            <div class="row" style="margin-top:12px;">
+            <div class="button-row" style="margin-top:12px;">
                 <button class="secondary" id="speakBtn" title="press (s) to Pronounce" type="button">🔊 Listen</button>
+                <button class="secondary" id="prevBtn" title="press (p) for previous card" type="button">Previous</button>
                 <button class="secondary" id="revealBtn" title="press (r) to Reveal" type="button">Reveal</button>
-                <button id="nextBtn" title="press (n) for new card" type="button">Next</button>
+
             </div>
+
+
         </div>
 
         <div class="card" id="ruleCard" style="display:none;">
@@ -179,828 +192,874 @@
 
     <script src="common.js"></script>
     <script>
-        let TOPIC_SETS = [];
+        class VerbsTrainer {
+            constructor() {
+                this.TOPIC_SETS = [];
+                this.DEFAULT_SET_ID = "verbs";
+                this.LS_PREF_LANG_KEY = "ft_prefLang";
+                this.LS_TOPIC_KEY = "ft_topicSet";
 
-        // loadJsonSet() is imported from common.js
+                this.settingsDetailsEl = document.getElementById("settings");
+                this.prefLangEl = el("prefLang");
+                this.modeEl = el("mode");
+                this.topicSetEl = el("topicSet");
+                this.verbEl = el("verb");
+                this.tenseEl = el("tense");
+                this.strictEl = el("strict");
+                this.slowSpeakEl = el("slowSpeak");
+                this.setTitleFrEl = el("setTitleFr");
+                this.ruleCardEl = el("ruleCard");
+                this.ruleBodyEl = el("ruleBody");
+                this.ruleSummaryTitleEl = el("ruleSummaryTitle");
 
-        async function loadAllSets() {
-            TOPIC_SETS = [
-                await loadJsonSet("data/verbs.json")
-            ];
-        }
+                this.answerRowEl = el("answerRow");
 
+                this.prevBtnEl = el("prevBtn");
+                this.checkBtnEl = el("checkBtn");
+                this.studyEl = el("study");
+                this.randomEl = el("random");
+                this.pronounceEl = el("pronounce");
+                this.revealBtnEl = el("revealBtn");
+                this.answerEl = el("answer");
+                this.feedbackEl = el("feedback");
+                this.grammarCommentEl = el("grammarComment");
+                this.currentExtraEl = el("currentExtra");
+                this.prevExtraEl = el("prevExtra");
+                this.bigPromptEl = el("bigPrompt");
+                this.smallPromptEl = el("smallPrompt");
+                this.scorePillEl = el("scorePill");
+                this.progressPillEl = el("progressPill");
+                this.wordsSeenSet = new Set();
+                this.formsBoxEl = el("formsBox");
+                this.formsHintEl = el("formsHint");
 
-        // Optional: change the default set here
-        const DEFAULT_SET_ID = "verbs";
+                this.groupEls = {
+                    er: el("grp_er"),
+                    ir: el("grp_ir"),
+                    re: el("grp_re"),
+                    irregular: el("grp_irregular")
+                };
 
-        // el() is imported from common.js
-        const settingsDetailsEl = document.getElementById("settings");
+                this.pronounLabelEl = el("pronounLabel");
 
-        const prefLangEl = el("prefLang");
+                this.currentItem = null;
+                this.total = 0;
+                this.correct = 0;
+                this.allowHotkeysInAnswer = false;
 
-        // LANG_LABELS is imported from common.js
+                this.currentMode = null;
+                this.currentTense = "present";
+                this.currentPronounKey = null;
+                this.currentExpected = null;
 
-        const modeEl = el("mode");
-        const topicSetEl = el("topicSet");
-        const verbEl = el("verb");
-        const tenseEl = el("tense");
-        const strictEl = el("strict");
-        const slowSpeakEl = el("slowSpeak");
-        const setTitleFrEl = el("setTitleFr");
-        const ruleCardEl = el("ruleCard");
-        const ruleBodyEl = el("ruleBody");
-        const ruleSummaryTitleEl = el("ruleSummaryTitle");
+                this.history = [];
+                this.historyIndex = -1;
+                this.seqIndex = -1;
 
-        const answerRowEl = el("answerRow");
-        const nextBtnEl = el("nextBtn");
-        const studyEl = el("study");
-        const pronounceEl = el("pronounce");
+                this.PRONOUN_KEYS = ["je", "tu", "il", "elle", "nous", "vous", "ils", "elles"];
 
-        const revealBtnEl = el("revealBtn");
-
-
-        const answerEl = el("answer");
-        const feedbackEl = el("feedback");
-        const grammarCommentEl = el("grammarComment");
-        const currentExtraEl = el("currentExtra");
-        const prevExtraEl = el("prevExtra");
-        const bigPromptEl = el("bigPrompt");
-        const smallPromptEl = el("smallPrompt");
-        const scorePillEl = el("scorePill");
-        const formsBoxEl = el("formsBox");
-        const formsHintEl = el("formsHint");
-        const groupEls = {
-            er: el("grp_er"),
-            ir: el("grp_ir"),
-            re: el("grp_re"),
-            irregular: el("grp_irregular")
-        };
-
-        const pronounLabelEl = el("pronounLabel");
-
-        let currentItem = null;
-
-
-
-        let total = 0;
-        let correct = 0;
-        let allowHotkeysInAnswer = false;
-
-
-
-
-        function updateLanguageUI() {
-            const lang = prefLangEl.value || "en";
-            const langLabel = LANG_LABELS[lang] || lang;
-
-            const optA = modeEl.querySelector('option[value="lang_to_fr"]');
-            const optB = modeEl.querySelector('option[value="fr_to_lang"]');
-
-            if (optA) optA.textContent = `${langLabel} → Français`;
-            if (optB) optB.textContent = `Français → ${langLabel}`;
-        }
-
-        function getTopicName(set) {
-            const lang = prefLangEl.value || "en";
-
-            if (lang === "ru" && set.name_ru) return set.name_ru;
-            return set.name;
-        }
-        function updateAnswerRowVisibility() {
-            const isForms = modeEl.value === "forms_present";
-
-            // Forms mode: show input + Check/Next
-            answerRowEl.style.display = isForms ? "" : "none";
-
-            // Non-forms modes: show Next button
-            nextBtnEl.style.display = isForms ? "none" : "";
-            feedbackEl.textContent = "";
-            feedbackEl.className = "feedback";
-            currentExtraEl.textContent = "";
-
-        }
-
-        function updateRevealButtonState() {
-            const isStudy = !!studyEl?.checked;
-            revealBtnEl.disabled = isStudy;                 // actually disables click + focus
-            revealBtnEl.classList.toggle("disabled", isStudy);
-        }
-
-        // escapeHtml() is imported from common.js
-
-        function fmtVerbExampleTable(p, lang, tense = "present") {
-            if (!p) return "";
-
-            const example = p.example;
-            if (!example) return "";
-
-            const forms = example?.forms?.[tense] || {};
-            const ending = p?.endings?.[tense] || {};
-
-            const infinitive = escapeHtml(example.infinitive || "");
-            const stem = escapeHtml(example.stem || "");
-
-            const InfLabel = (lang === "ru") ? "Инфинитив" : "Infinitive";
-            const StemLabel = (lang === "ru") ? "Корень" : "Stem";
-            const PronounLabel = (lang === "ru") ? "Местоимение" : "Pronoun";
-            const EndingLabel = (lang === "ru") ? "Окончание" : "Ending";
-            const ExampleLabel = (lang === "ru") ? "Пример" : "Example";
-
-            return `
-    <div class="tiny" style="margin-top:6px;">
-      <div><b>${InfLabel}:</b> <code>${infinitive}</code></div>
-      <div><b>${StemLabel}:</b> <code>${stem}</code></div>
-    </div>
-
-    <table class="rule-table">
-      <thead>
-        <tr>
-          <th>${PronounLabel}</th>
-          <th>${EndingLabel}</th>
-          <th>${ExampleLabel}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code>je</code></td>
-          <td><code>${escapeHtml(ending.je || "")}</code></td>
-          <td><code>${escapeHtml(forms.je || "")}</code>: ${stem}<span data-red>${escapeHtml(ending.je || "")}</span></td>
-        </tr>
-        <tr>
-          <td><code>tu</code></td>
-          <td><code>${escapeHtml(ending.tu || "")}</code></td>
-          <td><code>${escapeHtml(forms.tu || "")}</code>: ${stem}<span data-red>${escapeHtml(ending.tu || "")}</span></td>
-        </tr>
-        <tr>
-          <td><code>il / elle / on</code></td>
-          <td><code>${escapeHtml(ending["il/elle/on"] || "")}</code></td>
-          <td><code>${escapeHtml(forms.il || "")}</code>: ${stem}<span data-red>${escapeHtml(ending["il/elle/on"] || "")}</span></td>
-        </tr>
-        <tr>
-          <td><code>nous</code></td>
-          <td><code>${escapeHtml(ending.nous || "")}</code></td>
-          <td><code>${escapeHtml(forms.nous || "")}</code>: ${stem}<span data-red>${escapeHtml(ending.nous || "")}</span></td>
-        </tr>
-        <tr>
-          <td><code>vous</code></td>
-          <td><code>${escapeHtml(ending.vous || "")}</code></td>
-          <td><code>${escapeHtml(forms.vous || "")}</code>: ${stem}<span data-red>${escapeHtml(ending.vous || "")}</span></td>
-        </tr>
-        <tr>
-          <td><code>ils / elles</code></td>
-          <td><code>${escapeHtml(ending["ils/elles"] || "")}</code></td>
-          <td><code>${escapeHtml(forms.ils || "")}</code>: ${stem}<span data-red>${escapeHtml(ending["ils/elles"] || "")}</span></td>
-        </tr>
-      </tbody>
-    </table>
-  `;
-        }
-
-
-
-        function renderRuleCard() {
-            const set = getActiveSet();
-            const rule = set?.rule;
-
-            if (!rule) {
-                ruleCardEl.style.display = "none";
-                ruleBodyEl.innerHTML = "";
-                return;
+                this.initApp();
             }
 
-            ruleCardEl.style.display = "";
-            const lang = prefLangEl.value || "en";
+            async initApp() {
+                this.setupEventListeners();
+                this.loadPreferredLanguage();
 
-            ruleSummaryTitleEl.textContent = rule.source_fr || "Rule";
+                await this.loadAllSets();
 
-            const summary =
-                (lang === "ru" && rule.summary_ru) ? rule.summary_ru :
-                    (lang === "en" && rule.summary_eng) ? rule.summary_eng :
-                        (rule.summary_fr || rule.summary_eng || rule.summary_ru || "");
-
-            const patternLabel = (lang === "ru") ? "Шаблон" : "Pattern";
-            const exampleLabel = (lang === "ru") ? "Пример" : "Example";
-            const tenseLabel = (lang === "ru") ? "Время" : "Tense";
-
-            const enabledGroups = new Set(getEnabledGroups()); // ["er","ir","re"] if none checked
-            const visiblePatterns = (rule.patterns || []).filter(p => enabledGroups.has((p.group || "").toLowerCase()));
-            if (!visiblePatterns.length) {
-                ruleBodyEl.innerHTML = `<div class="tiny">${escapeHtml(summary)}</div><div class="tiny muted" style="margin-top:10px;">No rule patterns for the selected verb groups.</div>`;
-                return;
+                this.initTopicDropdown();
+                this.loadTopicSelection();
+                this.initVerbDropdown();
+                this.updateLanguageUI();
+                this.updateTenseUI();
+                this.updateAnswerRowVisibility();
+                this.applyFormsUIForSet(this.getActiveSet());
+                this.updateSetTitle();
+                this.updateRevealButtonState();
+                this.renderRuleCard();
+                this.setCard();
+                this.updateScore();
+                
+                if (window.speechSynthesis && window.speechSynthesis.getVoices) {
+                    window.speechSynthesis.getVoices();
+                }
             }
 
+            async loadAllSets() {
+                this.TOPIC_SETS = [
+                    await loadJsonSet("data/verbs.js")
+                ];
+            }
 
+            updateLanguageUI() {
+                const lang = this.prefLangEl.value || "en";
+                const langLabel = LANG_LABELS[lang] || lang;
+                const optA = this.modeEl.querySelector('option[value="lang_to_fr"]');
+                const optB = this.modeEl.querySelector('option[value="fr_to_lang"]');
 
-            const patternsHtml = visiblePatterns.map((p) => {
-                const badge = p.type ? `<span class="rule-badge">${escapeHtml(p.type)}</span>` : "";
-                const tense = p.tense || (tenseEl?.value || "present");
+                if (optA) optA.textContent = `${langLabel} → Français`;
+                if (optB) optB.textContent = `Français → ${langLabel}`;
+            }
 
-                const grammar =
-                    (lang === "ru") ? (p?.grammar?.[tense]?.grammar_ru || p?.grammar?.present?.grammar_ru || "") :
-                        (p?.grammar?.[tense]?.grammar_eng || p?.grammar?.present?.grammar_eng || "");
+            getTopicName(set) {
+                const lang = this.prefLangEl.value || "en";
+                if (lang === "ru" && set.name_ru) return set.name_ru;
+                return set.name;
+            }
 
-                const exampleTable = p ? fmtVerbExampleTable(p, lang, tense) : "";
+            updateAnswerRowVisibility() {
+                const isForms = this.modeEl.value === "forms_present";
+                this.answerRowEl.style.display = isForms ? "" : "none";
+                this.feedbackEl.textContent = "";
+                this.feedbackEl.className = "feedback";
+                this.currentExtraEl.textContent = "";
+            }
+
+            updateRevealButtonState() {
+                const isStudy = !!this.studyEl?.checked;
+                this.revealBtnEl.disabled = isStudy;
+                this.revealBtnEl.classList.toggle("disabled", isStudy);
+            }
+
+            fmtVerbExampleTable(p, lang, tense = "present") {
+                if (!p) return "";
+                const example = p.example;
+                if (!example) return "";
+
+                const forms = example?.forms?.[tense] || {};
+                const ending = p?.endings?.[tense] || {};
+
+                const infinitive = escapeHtml(example.infinitive || "");
+                const stem = escapeHtml(example.stem || "");
+
+                const InfLabel = (lang === "ru") ? "Инфинитив" : "Infinitive";
+                const StemLabel = (lang === "ru") ? "Корень" : "Stem";
+                const PronounLabel = (lang === "ru") ? "Местоимение" : "Pronoun";
+                const EndingLabel = (lang === "ru") ? "Окончание" : "Ending";
+                const ExampleLabel = (lang === "ru") ? "Пример" : "Example";
 
                 return `
-      <div class="rule-section card">
-        <div class="rule-title">
-          ${patternLabel}: <span class="expected">${badge}</span>
+        <div class="tiny" style="margin-top:6px;">
+          <div><b>${InfLabel}:</b> <code>${infinitive}</code></div>
+          <div><b>${StemLabel}:</b> <code>${stem}</code></div>
         </div>
-        <div class="rule-subtitle"><b>${tenseLabel}:</b> ${escapeHtml(tense)}</div>
-        <div class="rule-subtitle">${escapeHtml(grammar)}</div>
-        ${exampleTable ? `<div class="tiny"><b>${exampleLabel}</b>${exampleTable}</div>` : ""}
-      </div>
-    `;
-            }).join("");
-
-            ruleBodyEl.innerHTML = `
-    <div class="tiny">${escapeHtml(summary)}</div>
-    <div>${patternsHtml}</div>
-  `;
-        }
-
-        function initVerbDropdown() {
-            const set = getActiveSet();
-
-            // Keep selection if still valid
-            const prev = verbEl.value || "all";
-
-            // Filter by current group checkboxes
-            const filteredItems = getItemsFilteredByVerbGroups(set);
-
-            // Rebuild options
-            verbEl.innerHTML = `<option value="all">All verbs</option>`;
-
-            const infinitives = filteredItems
-                .map(v => v.infinitive)
-                .filter(Boolean)
-                .sort((a, b) => a.localeCompare(b, "fr"));
-
-            for (const inf of infinitives) {
-                const opt = document.createElement("option");
-                opt.value = inf;
-                opt.textContent = inf;
-                verbEl.appendChild(opt);
+        <table class="rule-table">
+          <thead>
+            <tr>
+              <th>${PronounLabel}</th>
+              <th>${EndingLabel}</th>
+              <th>${ExampleLabel}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>je</code></td>
+              <td><code>${escapeHtml(ending.je || "")}</code></td>
+              <td><code>${escapeHtml(forms.je || "")}</code>: ${stem}<span data-red>${escapeHtml(ending.je || "")}</span></td>
+            </tr>
+            <tr>
+              <td><code>tu</code></td>
+              <td><code>${escapeHtml(ending.tu || "")}</code></td>
+              <td><code>${escapeHtml(forms.tu || "")}</code>: ${stem}<span data-red>${escapeHtml(ending.tu || "")}</span></td>
+            </tr>
+            <tr>
+              <td><code>il / elle / on</code></td>
+              <td><code>${escapeHtml(ending["il/elle/on"] || "")}</code></td>
+              <td><code>${escapeHtml(forms.il || "")}</code>: ${stem}<span data-red>${escapeHtml(ending["il/elle/on"] || "")}</span></td>
+            </tr>
+            <tr>
+              <td><code>nous</code></td>
+              <td><code>${escapeHtml(ending.nous || "")}</code></td>
+              <td><code>${escapeHtml(forms.nous || "")}</code>: ${stem}<span data-red>${escapeHtml(ending.nous || "")}</span></td>
+            </tr>
+            <tr>
+              <td><code>vous</code></td>
+              <td><code>${escapeHtml(ending.vous || "")}</code></td>
+              <td><code>${escapeHtml(forms.vous || "")}</code>: ${stem}<span data-red>${escapeHtml(ending.vous || "")}</span></td>
+            </tr>
+            <tr>
+              <td><code>ils / elles</code></td>
+              <td><code>${escapeHtml(ending["ils/elles"] || "")}</code></td>
+              <td><code>${escapeHtml(forms.ils || "")}</code>: ${stem}<span data-red>${escapeHtml(ending["ils/elles"] || "")}</span></td>
+            </tr>
+          </tbody>
+        </table>`;
             }
 
-            // If previous verb no longer exists, reset to All
-            verbEl.value = infinitives.includes(prev) ? prev : "all";
-        }
+            renderRuleCard() {
+                const set = this.getActiveSet();
+                const rule = set?.rule;
 
-
-
-
-        // foldSettings() is imported from common.js
-
-        // stripDiacritics(), normaliseLoose(), and normaliseStrict() are imported from common.js
-
-        function norm(s) {
-            const strict = strictEl.value === "yes";
-            return strict ? normaliseStrict(s) : normaliseLoose(s);
-        }
-
-
-
-        function applyFormsUIForSet(set) {
-            const supports = !!set.supportsForms;
-
-            formsBoxEl.style.display = "";
-            formsBoxEl.style.opacity = supports ? "1" : "0.5";
-
-            for (const cb of Object.values(groupEls)) cb.disabled = !supports;
-
-            if (supports) {
-                // Default: none selected => ALL groups
-                for (const cb of Object.values(groupEls)) cb.checked = false;
-
-                formsHintEl.textContent =
-                    "Select -ER/-IR/-RE/Irregular. If nothing is selected, it practises all groups.";
-            } else {
-                formsHintEl.textContent = "";
-            }
-        }
-
-        function updateTenseUI() {
-            const mode = modeEl.value;
-            tenseEl.disabled = (mode !== "forms_present");
-        }
-
-        function getItemsFilteredByVerbGroups(set) {
-            const enabled = new Set(getEnabledVerbGroups()); // er/ir/re/irregular
-            const items = set.items || [];
-            return items.filter(v => enabled.has((v.group || "").toLowerCase()));
-        }
-
-
-        function getEnabledVerbGroups() {
-            const groups = [];
-
-            if (document.getElementById("grp_er")?.checked) groups.push("er");
-            if (document.getElementById("grp_ir")?.checked) groups.push("ir");
-            if (document.getElementById("grp_re")?.checked) groups.push("re");
-            if (document.getElementById("grp_irregular")?.checked) groups.push("irregular");
-
-            // If user unticks everything, fall back to all groups (so app still works)
-            return groups.length ? groups : ["er", "ir", "re", "irregular"];
-        }
-
-
-        function shouldAutoReveal() {
-            return !!studyEl?.checked;
-        }
-
-        function shouldAutoPronounce() {
-            return !!pronounceEl?.checked;
-        }
-
-        function getActiveSet() {
-            const id = topicSetEl.value;
-            return TOPIC_SETS.find(s => s.id === id) || TOPIC_SETS[0];
-        }
-
-        function getVerbGrammarComment(item, tense) {
-            if (!item?.grammar) return "";
-
-            const t = tense || "present";
-            const lang = prefLangEl.value || "en";
-
-            const node = item.grammar?.[t] || item.grammar?.present;
-            if (!node) return "";
-
-            const text = (lang === "ru") ? (node.grammar_ru || "") : (node.grammar_eng || "");
-            return String(text || "").trim();
-        }
-
-        // pick() is imported from common.js
-
-        function updateSetTitle() {
-            const set = getActiveSet();
-            setTitleFrEl.textContent = set.nameFr || set.name;
-        }
-
-        function getMeaningVerb(item) {
-            const lang = prefLangEl.value || "en";
-            if (!item?.meaning) return "";
-            return (lang === "ru") ? (item.meaning.ru || "") : (item.meaning.en || "");
-        }
-
-        function getEnabledGroups() {
-            const checked = Object.entries(groupEls)
-                .filter(([, cb]) => cb && cb.checked)
-                .map(([k]) => k);
-
-            return checked.length ? checked : ["er", "ir", "re"];
-        }
-
-        function getPronounDisplay(item, tense, key) {
-            const override = item?.pronouns?.[tense]?.[key];
-            return override || key; // e.g. "j’" instead of "je"
-        }
-
-
-        function getPreferredLangLabel() {
-            const lang = prefLangEl.value || "en";
-            return LANG_LABELS[lang] || "English";
-        }
-
-
-        let currentMode = null;
-        let currentTense = "present";
-        let currentPronounKey = null;
-        let currentExpected = null;
-
-        const PRONOUN_KEYS = ["je", "tu", "il", "elle", "nous", "vous", "ils", "elles"];
-
-        function setCard() {
-            if (currentItem) {
-                prevExtraEl.innerHTML = currentExtraEl.innerHTML || "";
-            }
-            currentExtraEl.innerHTML = "";
-            grammarCommentEl.textContent = "";
-
-            const set = getActiveSet();
-            const selectedVerb = verbEl.value || "all";
-
-            let pool = getItemsFilteredByVerbGroups(set);
-
-
-            if (selectedVerb !== "all") {
-                pool = pool.filter(v => v.infinitive === selectedVerb);
-            }
-
-            currentItem = pool.length ? pick(pool) : null;
-
-            const mode = modeEl.value;
-            currentMode = mode;
-
-
-            if (!pool.length) {
-                bigPromptEl.textContent = "No verbs match selected groups.";
-                smallPromptEl.textContent = "";
-                pronounLabelEl.style.display = "none";
-                answerEl.value = "";
-                return;
-            }
-
-
-            const meaning = getMeaningVerb(currentItem);
-
-            // default UI
-            pronounLabelEl.style.display = "none";
-            currentPronounKey = null;
-            currentExpected = null;
-
-            if (mode === "lang_to_fr") {
-                // Language -> French (user types infinitive)
-                bigPromptEl.textContent = meaning;
-                smallPromptEl.textContent = "";
-                answerEl.placeholder = "Type the French infinitive…";
-                currentExpected = currentItem.infinitive;
-
-            } else if (mode === "fr_to_lang") {
-                // French -> Language (user types meaning)
-                bigPromptEl.textContent = currentItem.infinitive; // card shows infinitive
-                smallPromptEl.textContent = "";
-                answerEl.placeholder = `Type in ${getPreferredLangLabel()}…`;
-                currentExpected = meaning;
-            } else if (mode === "forms_present") {
-                // Forms mode (present)
-
-                const tenseForms = currentItem.forms?.[currentTense];
-                if (!tenseForms) {
-                    // fallback: skip verb if no present data
-                    return setCard();
+                if (!rule) {
+                    this.ruleCardEl.style.display = "none";
+                    this.ruleBodyEl.innerHTML = "";
+                    return;
                 }
 
-                currentPronounKey = pick(PRONOUN_KEYS);
-                const expectedForm = tenseForms[currentPronounKey];
-                if (!expectedForm) return setCard();
+                this.ruleCardEl.style.display = "";
+                const lang = this.prefLangEl.value || "en";
+                this.ruleSummaryTitleEl.textContent = rule.source_fr || "Rule";
 
-                bigPromptEl.textContent = `${currentItem.infinitive} — ${meaning}`;
-                smallPromptEl.textContent = "";
+                const summary =
+                    (lang === "ru" && rule.summary_ru) ? rule.summary_ru :
+                    (lang === "en" && rule.summary_eng) ? rule.summary_eng :
+                    (rule.summary_fr || rule.summary_eng || rule.summary_ru || "");
 
-                pronounLabelEl.textContent = getPronounDisplay(currentItem, currentTense, currentPronounKey);
-                pronounLabelEl.style.display = "";
-                answerEl.placeholder = "Type the form…";
-                currentExpected = expectedForm;
+                const patternLabel = (lang === "ru") ? "Шаблон" : "Pattern";
+                const exampleLabel = (lang === "ru") ? "Пример" : "Example";
+                const tenseLabel = (lang === "ru") ? "Время" : "Tense";
+
+                const enabledGroups = new Set(this.getEnabledGroups());
+                const visiblePatterns = (rule.patterns || []).filter(p => enabledGroups.has((p.group || "").toLowerCase()));
+                
+                if (!visiblePatterns.length) {
+                    this.ruleBodyEl.innerHTML = `<div class="tiny">${escapeHtml(summary)}</div><div class="tiny muted" style="margin-top:10px;">No rule patterns for the selected verb groups.</div>`;
+                    return;
+                }
+
+                const patternsHtml = visiblePatterns.map((p) => {
+                    const badge = p.type ? `<span class="rule-badge">${escapeHtml(p.type)}</span>` : "";
+                    const tense = p.tense || (this.tenseEl?.value || "present");
+                    const grammar =
+                        (lang === "ru") ? (p?.grammar?.[tense]?.grammar_ru || p?.grammar?.present?.grammar_ru || "") :
+                        (p?.grammar?.[tense]?.grammar_eng || p?.grammar?.present?.grammar_eng || "");
+                    const exampleTable = p ? this.fmtVerbExampleTable(p, lang, tense) : "";
+
+                    return `
+          <div class="rule-section card">
+            <div class="rule-title">
+              ${patternLabel}: <span class="expected">${badge}</span>
+            </div>
+            <div class="rule-subtitle"><b>${tenseLabel}:</b> ${escapeHtml(tense)}</div>
+            <div class="rule-subtitle">${escapeHtml(grammar)}</div>
+            ${exampleTable ? `<div class="tiny"><b>${exampleLabel}</b>${exampleTable}</div>` : ""}
+          </div>`;
+                }).join("");
+
+                this.ruleBodyEl.innerHTML = `
+        <div class="tiny">${escapeHtml(summary)}</div>
+        <div>${patternsHtml}</div>`;
             }
 
-            answerEl.value = "";
+            initVerbDropdown() {
+                const set = this.getActiveSet();
+                const prev = this.verbEl.value || "all";
+                const filteredItems = this.getItemsFilteredByVerbGroups(set);
 
-            allowHotkeysInAnswer = false;
-            answerEl.focus();
-            if (shouldAutoReveal()) {
-                reveal({ fromCheck: false });
+                this.verbEl.innerHTML = `<option value="all">All verbs</option>`;
+                const infinitives = filteredItems
+                    .map(v => v.infinitive)
+                    .filter(Boolean)
+                    .sort((a, b) => a.localeCompare(b, "fr"));
+
+                for (const inf of infinitives) {
+                    const opt = document.createElement("option");
+                    opt.value = inf;
+                    opt.textContent = inf;
+                    this.verbEl.appendChild(opt);
+                }
+
+                this.verbEl.value = infinitives.includes(prev) ? prev : "all";
             }
 
-            if (shouldAutoPronounce()) {
-                speakText(getSpeakText());
+            norm(s) {
+                const strict = this.strictEl.value === "yes";
+                return strict ? normaliseStrict(s) : normaliseLoose(s);
             }
 
-        }
+            applyFormsUIForSet(set) {
+                const supports = !!set.supportsForms;
+                this.formsBoxEl.style.display = "";
+                this.formsBoxEl.style.opacity = supports ? "1" : "0.5";
 
+                for (const cb of Object.values(this.groupEls)) cb.disabled = !supports;
 
-
-        function updateScore() {
-            scorePillEl.textContent = `Score: ${correct}/${total}`;
-        }
-
-        function reveal(opts = {}) {
-            if (!currentItem) return;
-
-            const { fromCheck = false } = opts;
-
-            // If user clicked Reveal button (not Check), clear feedback
-            if (!fromCheck) {
-                feedbackEl.textContent = "";
-                feedbackEl.className = "feedback";
-                prevExtraEl.textContent = "";
+                if (supports) {
+                    for (const cb of Object.values(this.groupEls)) cb.checked = false;
+                    this.formsHintEl.textContent = "Select -ER/-IR/-RE/Irregular. If nothing is selected, it practises all groups.";
+                } else {
+                    this.formsHintEl.textContent = "";
+                }
             }
 
-            currentExtraEl.innerHTML = buildRevealHtml(
-                currentItem,
-                currentMode,
-                currentTense,
-                currentPronounKey,
-                currentExpected
-            );
-
-            const g = getVerbGrammarComment(currentItem, currentTense);
-            grammarCommentEl.textContent = g ? `💡 ${g}` : "";
-        }
-
-        function buildRevealHtml(item, mode, tense, pronounKey, expected) {
-            if (!item) return "";
-
-            const meaning = getMeaningVerb(item);
-
-            if (mode === "lang_to_fr") {
-                return `<span class="expected">${escapeHtml(item.infinitive)}</span> [${escapeHtml(meaning)}]`;
+            updateTenseUI() {
+                const mode = this.modeEl.value;
+                this.tenseEl.disabled = (mode !== "forms_present");
             }
 
-            if (mode === "fr_to_lang") {
-                return `<span class="expected">${escapeHtml(meaning)}</span> [${escapeHtml(item.infinitive)}]`;
+            getItemsFilteredByVerbGroups(set) {
+                const enabled = new Set(this.getEnabledVerbGroups());
+                const items = set.items || [];
+                return items.filter(v => enabled.has((v.group || "").toLowerCase()));
             }
 
-            // forms_present
-            const p = getPronounDisplay(item, tense, pronounKey);
-            return `<span class="expected">${escapeHtml(p)} ${escapeHtml(expected)}</span> (expected: ${escapeHtml(expected)})`;
-        }
-
-
-        function check() {
-            foldSettings(settingsDetailsEl);
-            if (!currentItem) return;
-
-            const user = norm(answerEl.value);
-            const expected = norm(currentExpected || "");
-
-            const ok = user.length > 0 && user === expected;
-
-            total += 1;
-            if (ok) correct += 1;
-
-            updateScore();
-            if (shouldAutoReveal()) {
-                setCard();
-                return;
+            getEnabledVerbGroups() {
+                const groups = [];
+                if (document.getElementById("grp_er")?.checked) groups.push("er");
+                if (document.getElementById("grp_ir")?.checked) groups.push("ir");
+                if (document.getElementById("grp_re")?.checked) groups.push("re");
+                if (document.getElementById("grp_irregular")?.checked) groups.push("irregular");
+                return groups.length ? groups : ["er", "ir", "re", "irregular"];
             }
 
-            feedbackEl.textContent = ok ? "✓ Correct!" : `✖ ${user}`;
-            feedbackEl.className = "feedback " + (ok ? "ok" : "bad");
-
-
-
-            reveal({ fromCheck: true });
-
-            allowHotkeysInAnswer = true;
-
-            setCard();
-        }
-
-
-
-        function resetScore() {
-            total = 0; correct = 0;
-            updateScore();
-            feedbackEl.textContent = "Score cleared.";
-            feedbackEl.className = "feedback muted";
-        }
-
-        // Speech synthesis functions are imported from common.js
-
-        function getSpeakText() {
-            if (!currentItem) return "";
-
-            // OptC: forms mode -> speak the form shown/expected
-            if (currentMode === "forms_present") {
-                const p = getPronounDisplay(currentItem, currentTense, currentPronounKey);
-
-                return `${p} ${currentExpected || ""}`.trim();
+            shouldAutoReveal() {
+                return !!this.studyEl?.checked;
             }
 
-            // OptA / OptB: always speak infinitive
-            return currentItem.infinitive || "";
-        }
-
-        function speakText(text) {
-            const t = String(text || "").trim();
-            if (!t) return;
-            const slow = !!slowSpeakEl?.checked;
-            speakFrench(t, slow);
-        }
-
-
-        el("revealBtn").addEventListener("click", () => reveal({ fromCheck: false }));
-        el("checkBtn").addEventListener("click", check);
-        el("speakBtn").addEventListener("click", () => {
-            speakText(getSpeakText());
-        });
-
-        el("resetScoreBtn").addEventListener("click", resetScore);
-
-        modeEl.addEventListener("change", () => {
-            updateTenseUI();
-            updateAnswerRowVisibility();
-
-            setCard();
-        });
-
-        prefLangEl.addEventListener("change", () => {
-            savePreferredLanguage();
-            initTopicDropdown();
-            updateLanguageUI();
-            updateSetTitle();
-            renderRuleCard();
-            setCard(); // refresh prompt text if your card uses preferred language
-        });
-        topicSetEl.addEventListener("change", () => {
-            saveTopicSelection();
-            updateTenseUI();
-            applyFormsUIForSet(getActiveSet());
-            updateSetTitle();
-            initVerbDropdown();
-            renderRuleCard();
-            setCard();
-        });
-        tenseEl.addEventListener("change", () => {
-            answerEl.value = "";
-            reveal();       // will clear feedback because fromCheck=false by default
-            setCard();
-        });
-        verbEl.addEventListener("change", () => {
-            answerEl.value = "";
-            feedbackEl.textContent = "";
-            currentExtraEl.textContent = "";
-            setCard();
-        });
-
-
-        // Form filters (only meaningful if enabled for this set)
-        for (const cb of Object.values(groupEls)) {
-            cb.addEventListener("change", () => {
-                answerEl.value = "";
-                feedbackEl.textContent = "";
-                currentExtraEl.textContent = "";
-                initVerbDropdown();
-                renderRuleCard();
-                setCard();
-            });
-        }
-
-        studyEl.addEventListener("change", () => {
-            updateRevealButtonState();
-
-            if (studyEl.checked) {
-                if (!currentItem) setCard();
-                feedbackEl.textContent = "";
-                feedbackEl.className = "feedback";
-                reveal({ fromCheck: false });
-            }
-        });
-
-
-
-        formsHintEl.textContent = "Select -ER/-IR/-RE. If nothing is selected, it practises all groups.";
-
-        nextBtnEl.addEventListener("click", () => {
-            feedbackEl.textContent = "";
-            setCard();
-        });
-
-
-        answerEl.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") { e.preventDefault(); check(); }
-        });
-
-        document.addEventListener("keydown", (e) => {
-            if (e.ctrlKey || e.metaKey || e.altKey) return;
-
-            const active = document.activeElement;
-            const isEditable =
-                active &&
-                (active.tagName === "INPUT" ||
-                    active.tagName === "TEXTAREA" ||
-                    active.isContentEditable);
-
-            if (isEditable) {
-                const isAnswerInput = active === answerEl;
-                if (!(isAnswerInput && allowHotkeysInAnswer)) return;
+            shouldAutoPronounce() {
+                return !!this.pronounceEl?.checked;
             }
 
-            switch (e.key.toLowerCase()) {
-                case "n": e.preventDefault(); setCard(); break;
-                case "r": e.preventDefault(); reveal(); break;
-                case "s": e.preventDefault(); speakText(getSpeakText()); break;
-                case "x": e.preventDefault(); resetScore(); break;
-            }
-        });
-
-        // Populate topic dropdown
-        function initTopicDropdown() {
-            topicSetEl.innerHTML = "";
-            const customDropdown = document.getElementById("topicsDropdown");
-
-            if (!customDropdown) {
-                console.error("topicsDropdown element not found!");
-                return;
+            getActiveSet() {
+                const id = this.topicSetEl.value;
+                return this.TOPIC_SETS.find(s => s.id === id) || this.TOPIC_SETS[0];
             }
 
-            customDropdown.innerHTML = "";
+            getVerbGrammarComment(item, tense) {
+                if (!item?.grammar) return "";
+                const t = tense || "present";
+                const lang = this.prefLangEl.value || "en";
+                const node = item.grammar?.[t] || item.grammar?.present;
+                if (!node) return "";
 
-            for (const set of TOPIC_SETS) {
-                // Populate hidden select for compatibility
-                const opt = document.createElement("option");
-                opt.value = set.id;
-                opt.textContent = getTopicName(set);
-                topicSetEl.appendChild(opt);
+                const text = (lang === "ru") ? (node.grammar_ru || "") : (node.grammar_eng || "");
+                return String(text || "").trim();
+            }
 
-                // Populate custom dropdown
-                const btn = document.createElement("button");
-                btn.className = "dropdown-item secondary";
-                btn.type = "button";
-                btn.textContent = getTopicName(set);
-                btn.dataset.topicId = set.id;
-                btn.addEventListener("click", () => {
-                    selectTopic(set.id);
-                    closeTopicsDropdown();
+            updateSetTitle() {
+                const set = this.getActiveSet();
+                this.setTitleFrEl.textContent = set.nameFr || set.name;
+            }
+
+            getMeaningVerb(item) {
+                const lang = this.prefLangEl.value || "en";
+                if (!item?.meaning) return "";
+                return (lang === "ru") ? (item.meaning.ru || "") : (item.meaning.en || "");
+            }
+
+            getEnabledGroups() {
+                const checked = Object.entries(this.groupEls)
+                    .filter(([, cb]) => cb && cb.checked)
+                    .map(([k]) => k);
+                return checked.length ? checked : ["er", "ir", "re"];
+            }
+
+            getPronounDisplay(item, tense, key) {
+                const override = item?.pronouns?.[tense]?.[key];
+                return override || key;
+            }
+
+            getPreferredLangLabel() {
+                const lang = this.prefLangEl.value || "en";
+                return LANG_LABELS[lang] || "English";
+            }
+
+            setCard(navigateOpts = {}) {
+                if (this.currentItem && !navigateOpts.goBack) {
+                    this.prevExtraEl.innerHTML = this.currentExtraEl.innerHTML || "";
+                }
+                this.currentExtraEl.innerHTML = "";
+                this.grammarCommentEl.textContent = "";
+
+                const set = this.getActiveSet();
+                const selectedVerb = this.verbEl.value || "all";
+
+                let pool = this.getItemsFilteredByVerbGroups(set);
+
+                if (selectedVerb !== "all") {
+                    pool = pool.filter(v => v.infinitive === selectedVerb);
+                }
+
+                if (!pool.length) {
+                    this.currentItem = null;
+                    this.currentMode = this.modeEl.value;
+                    this.bigPromptEl.textContent = "No verbs match selected groups.";
+                    this.smallPromptEl.textContent = "";
+                    this.pronounLabelEl.style.display = "none";
+                    this.answerEl.value = "";
+                    return;
+                }
+
+                if (navigateOpts.goBack) {
+                    if (this.historyIndex > 0) {
+                        this.historyIndex--;
+                        this.applyStateFromHistory(this.history[this.historyIndex]);
+                    }
+                    return;
+                }
+
+                if (this.historyIndex < this.history.length - 1 && this.historyIndex >= 0) {
+                    this.history = this.history.slice(0, this.historyIndex + 1);
+                }
+
+                const isRandom = !!this.randomEl?.checked;
+
+                if (isRandom) {
+                    this.currentItem = pick(pool);
+                } else {
+                    this.seqIndex = (this.seqIndex + 1) % pool.length;
+                    this.currentItem = pool[this.seqIndex];
+                }
+
+                const mode = this.modeEl.value;
+                this.currentMode = mode;
+
+                const meaning = this.getMeaningVerb(this.currentItem);
+                this.pronounLabelEl.style.display = "none";
+                this.currentPronounKey = null;
+                this.currentExpected = null;
+
+                if (mode === "forms_present") {
+                    const tenseForms = this.currentItem.forms?.[this.currentTense];
+                    if (tenseForms) {
+                        this.currentPronounKey = pick(this.PRONOUN_KEYS);
+                        this.currentExpected = tenseForms[this.currentPronounKey] || null;
+                    }
+                } else if (mode === "lang_to_fr") {
+                    this.currentExpected = this.currentItem.infinitive;
+                } else if (mode === "fr_to_lang") {
+                    this.currentExpected = meaning;
+                }
+
+                this.history.push({
+                    item: this.currentItem,
+                    mode: this.currentMode,
+                    meaning: meaning,
+                    pronounKey: this.currentPronounKey,
+                    expected: this.currentExpected
                 });
-                customDropdown.appendChild(btn);
+                this.historyIndex = this.history.length - 1;
+
+                this.renderCard();
             }
 
-            // default selection
-            if (TOPIC_SETS.length > 0) {
-                const hasDefault = TOPIC_SETS.some(s => s.id === DEFAULT_SET_ID);
-                const defaultId = hasDefault ? DEFAULT_SET_ID : TOPIC_SETS[0].id;
-                topicSetEl.value = defaultId;
-                updateTopicLabel(defaultId);
+            applyStateFromHistory(state) {
+                this.currentItem = state.item;
+                this.currentMode = state.mode;
+                this.currentPronounKey = state.pronounKey;
+                this.currentExpected = state.expected;
+                
+                this.prevExtraEl.innerHTML = "";
+                this.renderCard();
             }
-        }
 
-        function selectTopic(topicId) {
-            topicSetEl.value = topicId;
-            updateTopicLabel(topicId);
-            saveTopicSelection();
-            applyFormsUIForSet(getActiveSet());
-            updateSetTitle();
-            renderRuleCard();
-            setCard();
-        }
+            renderCard() {
+                if (!this.currentItem) return;
+                const meaning = this.getMeaningVerb(this.currentItem);
+                const isStudy = this.shouldAutoReveal();
+                const mode = this.currentMode;
 
-        function updateTopicLabel(topicId) {
-            const set = TOPIC_SETS.find(s => s.id === topicId);
-            if (set) {
-                document.getElementById("currentTopicLabel").textContent = getTopicName(set);
+                if (isStudy) {
+                    if (mode === "forms_present") {
+                        const tenseForms = this.currentItem.forms?.[this.currentTense];
+                        if (!tenseForms) return this.setCard();
+
+                        this.currentPronounKey = pick(this.PRONOUN_KEYS);
+                        const expectedForm = tenseForms[this.currentPronounKey];
+                        if (!expectedForm) return this.setCard();
+
+                        this.pronounLabelEl.textContent = this.getPronounDisplay(this.currentItem, this.currentTense, this.currentPronounKey);
+                        this.pronounLabelEl.style.display = "";
+                        this.currentExpected = expectedForm;
+
+                        this.bigPromptEl.innerHTML = formatHints(`${this.currentItem.infinitive} — ${meaning}`);
+                        this.smallPromptEl.innerHTML = formatHints(`${this.pronounLabelEl.textContent} ${expectedForm}`);
+                    } else if (mode === "lang_to_fr") {
+                        this.bigPromptEl.innerHTML = formatHints(meaning);
+                        this.smallPromptEl.innerHTML = formatHints(this.currentItem.infinitive);
+                        this.currentExpected = this.currentItem.infinitive;
+                    } else {
+                        this.bigPromptEl.innerHTML = formatHints(this.currentItem.infinitive);
+                        this.smallPromptEl.innerHTML = formatHints(meaning);
+                        this.currentExpected = meaning;
+                    }
+                    this.answerEl.placeholder = "Study mode…";
+                } else if (mode === "lang_to_fr") {
+                    this.bigPromptEl.innerHTML = formatHints(meaning);
+                    this.smallPromptEl.innerHTML = "";
+                    this.answerEl.placeholder = "Type the French infinitive…";
+                    this.currentExpected = this.currentItem.infinitive;
+                } else if (mode === "fr_to_lang") {
+                    this.bigPromptEl.innerHTML = formatHints(this.currentItem.infinitive);
+                    this.smallPromptEl.innerHTML = "";
+                    this.answerEl.placeholder = `Type in ${this.getPreferredLangLabel()}…`;
+                    this.currentExpected = meaning;
+                } else if (mode === "forms_present") {
+                    const expectedForm = this.currentExpected;
+                    if (!expectedForm) {
+                        this.setCard();
+                        return;
+                    }
+
+                    this.bigPromptEl.innerHTML = formatHints(`${this.currentItem.infinitive} — ${meaning}`);
+                    this.smallPromptEl.innerHTML = "";
+
+                    this.pronounLabelEl.textContent = this.getPronounDisplay(this.currentItem, this.currentTense, this.currentPronounKey);
+                    this.pronounLabelEl.style.display = "";
+                    this.answerEl.placeholder = "Type the form…";
+                }
+
+                this.answerEl.value = "";
+                this.allowHotkeysInAnswer = false;
+                if (this.checkBtnEl) {
+                    this.checkBtnEl.textContent = "Check";
+                    this.checkBtnEl.title = "press (enter) to check";
+                }
+                this.isChecked = false;
+                this.answerEl.focus();
+
+                // Reset feedback on new card
+                if (this.feedbackEl) { this.feedbackEl.textContent = ""; this.feedbackEl.className = "feedback"; }
+                if (this.prevExtraEl) this.prevExtraEl.innerHTML = "";
+                if (this.grammarCommentEl) this.grammarCommentEl.textContent = "";
+
+                this.updateProgress();
+
+                if (this.shouldAutoReveal()) this.reveal({ fromCheck: false });
+                if (this.shouldAutoPronounce()) this.speakText(this.getSpeakText());
             }
-        }
 
-        function toggleTopics() {
-            document.getElementById("topicsDropdown").classList.toggle("show");
-        }
-
-        function closeTopicsDropdown() {
-            document.getElementById("topicsDropdown")?.classList.remove("show");
-        }
-
-        const LS_PREF_LANG_KEY = "ft_prefLang";
-
-        function loadPreferredLanguage() {
-            const saved = localStorage.getItem(LS_PREF_LANG_KEY);
-            if (saved) prefLangEl.value = saved;
-        }
-
-        function savePreferredLanguage() {
-            localStorage.setItem(LS_PREF_LANG_KEY, prefLangEl.value || "en");
-        }
-
-        const LS_TOPIC_KEY = "ft_topicSet";
-
-        function loadTopicSelection() {
-            const saved = localStorage.getItem(LS_TOPIC_KEY);
-            if (saved) {
-                topicSetEl.value = saved;
-                updateTopicLabel(saved);
+            updateScore() {
+                this.scorePillEl.textContent = `Score: ${this.correct}/${this.total}`;
             }
-        }
 
-        function saveTopicSelection() {
-            localStorage.setItem(LS_TOPIC_KEY, topicSetEl.value);
-        }
+            updateProgress() {
+                if (!this.progressPillEl) return;
+                const total = this.currentValidItems?.length ?? 0;
+                const done = Math.min(this.wordsSeenSet.size, total);
+                this.progressPillEl.textContent = `Verbs: ${done}/${total}`;
+            }
 
+            goPrevious() {
+                this.setCard({ goBack: true });
+            }
 
+            reveal(opts = {}) {
+                if (!this.currentItem) return;
+                const { fromCheck = false } = opts;
 
-        window.speechSynthesis?.getVoices?.();
+                const key = this.currentItem.infinitive || JSON.stringify(this.currentItem);
+                this.wordsSeenSet.add(key);
+                this.updateProgress();
 
-        // Close topics dropdown if user clicks outside
-        window.addEventListener("click", function (e) {
-            const dropdown = document.getElementById("topicsDropdown");
-            const dropdownContainer = dropdown?.parentElement;
+                if (!fromCheck) {
+                    this.feedbackEl.textContent = "";
+                    this.feedbackEl.className = "feedback";
+                    this.prevExtraEl.textContent = "";
+                }
 
-            // Check if click is outside the dropdown container
-            if (dropdownContainer && !dropdownContainer.contains(e.target)) {
-                if (dropdown.classList.contains("show")) {
-                    dropdown.classList.remove("show");
+                if (this.shouldAutoReveal()) {
+                    this.currentExtraEl.innerHTML = "";
+                } else {
+                    this.currentExtraEl.innerHTML = this.buildRevealHtml(
+                        this.currentItem, this.currentMode, this.currentTense,
+                        this.currentPronounKey, this.currentExpected
+                    );
+                }
+
+                const g = this.getVerbGrammarComment(this.currentItem, this.currentTense);
+                this.grammarCommentEl.textContent = g ? `💡 ${g}` : "";
+            }
+
+            buildRevealHtml(item, mode, tense, pronounKey, expected) {
+                if (!item) return "";
+                const meaning = this.getMeaningVerb(item);
+                
+                if (mode === "lang_to_fr") {
+                    return `<span class="expected">${escapeHtml(item.infinitive)}</span> <br>[${escapeHtml(meaning)}]`;
+                }
+                if (mode === "fr_to_lang") {
+                    return `<span class="expected">${escapeHtml(meaning)}</span> <br>[${escapeHtml(item.infinitive)}]`;
+                }
+                const p = this.getPronounDisplay(item, tense, pronounKey);
+                return `<span class="expected">${escapeHtml(p)} ${escapeHtml(expected)}</span> <br>[expected: ${escapeHtml(expected)}]`;
+            }
+
+            check() {
+                foldSettings(this.settingsDetailsEl);
+                if (!this.currentItem) return;
+
+                const user = this.norm(this.answerEl.value);
+                const expected = this.norm(this.currentExpected || "");
+                const ok = user.length > 0 && user === expected;
+
+                this.total += 1;
+                if (ok) this.correct += 1;
+
+                this.updateScore();
+                if (this.shouldAutoReveal()) {
+                    this.setCard();
+                    return;
+                }
+
+                this.feedbackEl.textContent = ok ? "✓" : "✖";
+                this.feedbackEl.className = "feedback " + (ok ? "ok" : "bad");
+
+                this.reveal({ fromCheck: true });
+                this.allowHotkeysInAnswer = true;
+                if (this.checkBtnEl) {
+                    this.checkBtnEl.textContent = "Next";
+                    this.checkBtnEl.title = "press (enter) for new card";
+                }
+                this.isChecked = true;
+            }
+
+            next() {
+                this.setCard();
+            }
+
+            handleCheckBtn() {
+                if (this.isChecked) {
+                    this.next();
+                } else {
+                    this.check();
                 }
             }
+
+            resetScore() {
+                this.total = 0; 
+                this.correct = 0;
+                this.updateScore();
+                this.feedbackEl.textContent = "Score cleared.";
+                this.feedbackEl.className = "feedback muted";
+            }
+
+            getSpeakText() {
+                if (!this.currentItem) return "";
+                if (this.currentMode === "forms_present") {
+                    const p = this.getPronounDisplay(this.currentItem, this.currentTense, this.currentPronounKey);
+                    return `${p} ${this.currentExpected || ""}`.trim();
+                }
+                return this.currentItem.infinitive || "";
+            }
+
+            speakText(text) {
+                const t = String(text || "").trim();
+                if (!t) return;
+                const slow = !!this.slowSpeakEl?.checked;
+                speakFrench(t, slow);
+            }
+
+            initTopicDropdown() {
+                this.topicSetEl.innerHTML = "";
+                const customDropdown = document.getElementById("topicsDropdown");
+
+                if (!customDropdown) return;
+                customDropdown.innerHTML = "";
+
+                for (const set of this.TOPIC_SETS) {
+                    const opt = document.createElement("option");
+                    opt.value = set.id;
+                    opt.textContent = this.getTopicName(set);
+                    this.topicSetEl.appendChild(opt);
+
+                    const btn = document.createElement("button");
+                    btn.className = "dropdown-item secondary";
+                    btn.type = "button";
+                    btn.textContent = this.getTopicName(set);
+                    btn.dataset.topicId = set.id;
+                    btn.addEventListener("click", () => {
+                        this.selectTopic(set.id);
+                        this.closeTopicsDropdown();
+                    });
+                    customDropdown.appendChild(btn);
+                }
+
+                if (this.TOPIC_SETS.length > 0) {
+                    const hasDefault = this.TOPIC_SETS.some(s => s.id === this.DEFAULT_SET_ID);
+                    const defaultId = hasDefault ? this.DEFAULT_SET_ID : this.TOPIC_SETS[0].id;
+                    this.topicSetEl.value = defaultId;
+                    this.updateTopicLabel(defaultId);
+                }
+            }
+
+            selectTopic(topicId) {
+                this.topicSetEl.value = topicId;
+                this.updateTopicLabel(topicId);
+                this.saveTopicSelection();
+                this.wordsSeenSet.clear();
+                this.applyFormsUIForSet(this.getActiveSet());
+                this.updateSetTitle();
+                this.renderRuleCard();
+                this.setCard();
+            }
+
+            updateTopicLabel(topicId) {
+                const set = this.TOPIC_SETS.find(s => s.id === topicId);
+                if (set) {
+                    document.getElementById("currentTopicLabel").textContent = this.getTopicName(set);
+                }
+            }
+
+            toggleTopics() {
+                document.getElementById("topicsDropdown").classList.toggle("show");
+            }
+
+            closeTopicsDropdown() {
+                document.getElementById("topicsDropdown")?.classList.remove("show");
+            }
+
+            loadPreferredLanguage() {
+                const saved = localStorage.getItem(this.LS_PREF_LANG_KEY);
+                if (saved) this.prefLangEl.value = saved;
+
+                const randomSaved = localStorage.getItem("ft_verbs_random");
+                if (randomSaved !== null && this.randomEl) {
+                    this.randomEl.checked = randomSaved === "true";
+                }
+            }
+
+            savePreferredLanguage() {
+                localStorage.setItem(this.LS_PREF_LANG_KEY, this.prefLangEl.value || "en");
+                if (this.randomEl) {
+                    localStorage.setItem("ft_verbs_random", String(this.randomEl.checked));
+                }
+            }
+
+            loadTopicSelection() {
+                const saved = localStorage.getItem(this.LS_TOPIC_KEY);
+                if (saved) {
+                    this.topicSetEl.value = saved;
+                    this.updateTopicLabel(saved);
+                }
+            }
+
+            saveTopicSelection() {
+                localStorage.setItem(this.LS_TOPIC_KEY, this.topicSetEl.value);
+            }
+
+            setupEventListeners() {
+                el("revealBtn").addEventListener("click", () => this.reveal({ fromCheck: false }));
+                el("checkBtn").addEventListener("click", () => this.handleCheckBtn());
+                el("speakBtn").addEventListener("click", () => this.speakText(this.getSpeakText()));
+                el("resetScoreBtn").addEventListener("click", () => this.resetScore());
+
+                this.modeEl.addEventListener("change", () => {
+                    this.updateTenseUI();
+                    this.updateAnswerRowVisibility();
+                    this.setCard();
+                });
+
+                this.prefLangEl.addEventListener("change", () => {
+                    this.savePreferredLanguage();
+                    this.initTopicDropdown();
+                    this.updateLanguageUI();
+                    this.updateSetTitle();
+                    this.renderRuleCard();
+                    this.setCard();
+                });
+
+                this.topicSetEl.addEventListener("change", () => {
+                    this.saveTopicSelection();
+                    this.wordsSeenSet.clear();
+                    this.updateTenseUI();
+                    this.applyFormsUIForSet(this.getActiveSet());
+                    this.updateSetTitle();
+                    this.initVerbDropdown();
+                    this.renderRuleCard();
+                    this.setCard();
+                });
+
+                this.tenseEl.addEventListener("change", () => {
+                    this.answerEl.value = "";
+                    this.reveal();
+                    this.setCard();
+                });
+
+                this.verbEl.addEventListener("change", () => {
+                    this.wordsSeenSet.clear();
+                    this.answerEl.value = "";
+                    this.feedbackEl.textContent = "";
+                    this.currentExtraEl.textContent = "";
+                    this.setCard();
+                });
+
+                for (const cb of Object.values(this.groupEls)) {
+                    cb.addEventListener("change", () => {
+                        this.wordsSeenSet.clear();
+                        this.answerEl.value = "";
+                        this.feedbackEl.textContent = "";
+                        this.currentExtraEl.textContent = "";
+                        this.initVerbDropdown();
+                        this.renderRuleCard();
+                        this.seqIndex = -1;
+                        this.setCard();
+                    });
+                }
+
+                if (this.randomEl) {
+                    this.randomEl.addEventListener("change", () => {
+                        this.savePreferredLanguage();
+                        this.seqIndex = -1;
+                        this.setCard();
+                    });
+                }
+
+                if (this.prevBtnEl) this.prevBtnEl.addEventListener("click", () => this.goPrevious());
+
+                this.studyEl.addEventListener("change", () => {
+                    this.updateRevealButtonState();
+                    if (this.studyEl.checked) {
+                        document.body.classList.add("study-mode");
+                        if (!this.currentItem) this.setCard();
+                        this.feedbackEl.textContent = "";
+                        this.feedbackEl.className = "feedback";
+                        this.reveal({ fromCheck: false });
+                    } else {
+                        document.body.classList.remove("study-mode");
+                    }
+                });
+
+                this.formsHintEl.textContent = "Select -ER/-IR/-RE. If nothing is selected, it practises all groups.";
+
+
+
+                this.answerEl.addEventListener("keydown", (e) => {
+                    if (e.key === "Enter") { e.preventDefault(); this.handleCheckBtn(); }
+                });
+
+                document.addEventListener("keydown", (e) => {
+                    if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+                    const active = document.activeElement;
+                    const isEditable = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable);
+
+                    if (isEditable) {
+                        const isAnswerInput = active === this.answerEl;
+                        if (!(isAnswerInput && this.allowHotkeysInAnswer)) return;
+                    }
+
+                    switch (e.key.toLowerCase()) {
+                        case "n": e.preventDefault(); this.setCard(); break;
+                        case "p": e.preventDefault(); this.goPrevious(); break;
+                        case "r": e.preventDefault(); this.reveal(); break;
+                        case "s": e.preventDefault(); this.speakText(this.getSpeakText()); break;
+                        case "x": e.preventDefault(); this.resetScore(); break;
+                    }
+                });
+
+                window.addEventListener("click", (e) => {
+                    const dropdown = document.getElementById("topicsDropdown");
+                    const dropdownContainer = dropdown?.parentElement;
+                    if (dropdownContainer && !dropdownContainer.contains(e.target)) {
+                        if (dropdown.classList.contains("show")) {
+                            dropdown.classList.remove("show");
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize App
+        let trainerInstance;
+        document.addEventListener("DOMContentLoaded", () => {
+            trainerInstance = new VerbsTrainer();
         });
-        (async function initApp() {
-            loadPreferredLanguage();
 
-            await loadAllSets();
-
-            initTopicDropdown();
-            loadTopicSelection();
-            initVerbDropdown();
-            updateLanguageUI();
-            updateTenseUI();
-            updateAnswerRowVisibility();
-            applyFormsUIForSet(getActiveSet());
-            updateSetTitle();
-            updateRevealButtonState();
-            renderRuleCard();
-            setCard();
-            updateScore();
-        })();
+        // Global proxy for dropdown clicking since it's an inline "onclick" attribute.
+        function toggleTopics() {
+            if (trainerInstance) trainerInstance.toggleTopics();
+        }
     </script>
 
 <script

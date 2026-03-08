@@ -1,4 +1,4 @@
-{
+window.DATA_SET = {
   "_comment": "TEMPLATE - Copy and customize this file for new vocabulary sets",
 
   "id": "template",
@@ -58,3 +58,4 @@
     }
   ]
 }
+;

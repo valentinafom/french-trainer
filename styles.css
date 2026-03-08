@@ -1,25 +1,32 @@
 /* Shared CSS Variables */
 :root {
-  --bg-page: #FFFFE3;
+  --bg-page: #f8fafc;
   --bg-card: #ffffff;
-  --border-soft: #CBCBCB;
-  --text-main: #4A4A4A;
-  --text-muted: #6D8196;
-  --accent-primary: #6D8196;
-  --accent-danger: #4A4A4A;
+  --border-soft: #e2e8f0;
+  --text-main: #334155;
+  --text-muted: #64748b;
+  --accent-primary: #6366f1;
+  --accent-primary-hover: #4f46e5;
+  --accent-danger: #ef4444;
+  --success-bg: #dcfce7;
+  --success-text: #166534;
+  --danger-bg: #fee2e2;
+  --danger-text: #991b1b;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 /* Base Styles */
 body {
   margin: 0;
-  background: var(--bg-card);
+  background: var(--bg-page);
   color: var(--text-main);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 p {
   margin: 0 0 16px;
-  color: #444;
+  color: var(--text-muted);
 }
 
 /* Layout */
@@ -31,11 +38,14 @@ p {
 
 .card {
   background: var(--bg-card);
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
-  margin: 14px 0;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--border-soft);
+  transition: box-shadow 0.2s ease;
 }
 
 .row {
@@ -47,6 +57,18 @@ p {
 
 .row.no-wrap {
   flex-wrap: nowrap;
+}
+
+.button-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.button-row button {
+  flex: 1;
+  white-space: nowrap;
+  padding: 10px 8px; /* Slightly tighter padding to fit more buttons */
 }
 
 .row.no-wrap input[type="text"] {
@@ -71,15 +93,26 @@ label {
 input[type="number"],
 input[type="text"],
 select {
-  padding: 8px 10px;
+  padding: 10px 14px;
   border-radius: 12px;
-  border: 1px solid #d8dbe6;
-  background: #fff;
-  font-size: 0.8rem;
+  border: 1px solid var(--border-soft);
+  background: var(--bg-card);
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 input[type="text"] {
-  width: 170px;
+  width: 200px;
 }
 
 .field {
@@ -97,55 +130,73 @@ input[type="text"] {
 
 /* Buttons */
 button {
-  padding: 8px 10px;
-  border-radius: 12px;
+  padding: 10px 16px;
+  border-radius: 999px;
   border: 0;
   cursor: pointer;
-  font-weight: 800;
+  font-weight: 600;
+  font-family: 'Inter', system-ui, sans-serif;
   background: var(--accent-primary);
   color: #fff;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 
 button:not(.icon-only) {
-  min-height: 20px;
+  min-height: 40px;
+}
+
+button:hover {
+  background: var(--accent-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 button:active {
   transform: translateY(1px);
+  box-shadow: none;
 }
 
 button.secondary {
   background: #ffffff;
   color: var(--text-main);
   border: 1px solid var(--border-soft);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+button.secondary:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
 }
 
 button.tertiary {
   background: transparent;
   color: var(--text-main);
   border: 1px solid transparent;
-  padding: 8px 10px;
-  border-radius: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
   font-weight: 600;
+  box-shadow: none;
 }
 
 button.tertiary:hover {
-  background: rgba(23, 77, 56, 0.08);
+  background: #f1f5f9;
 }
 
 button.tertiary:active {
-  background: rgba(23, 77, 56, 0.14);
+  background: #e2e8f0;
 }
 
 button.tertiary:focus-visible {
-  outline: 2px solid rgba(23, 77, 56, 0.4);
+  outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
 }
 
 button.disabled,
 button:disabled {
-  opacity: 0.45;
+  opacity: 0.5;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* Typography */
@@ -159,14 +210,20 @@ button:disabled {
 .french {
   font-size: 1.6rem;
   font-weight: 700;
-  margin: 0 0 8px;
+  margin: 0 0 12px;
+  color: var(--text-main);
 }
 
 .small {
-  font-size: 2.6rem;
-  font-weight: 800;
+  font-size: 1.6rem;
+  font-weight: 600;
+  font-style: italic;
   margin: 0 0 8px;
   color: var(--accent-primary);
+}
+
+#smallPrompt {
+  min-height: 32px; /* Prevent layout shift when empty */
 }
 
 .tiny {
@@ -175,13 +232,24 @@ button:disabled {
 }
 
 .muted {
-  color: #666;
+  color: var(--text-muted);
+}
+
+.hint {
+  font-size: 0.5em;
+  font-weight: 500;
+  color: var(--text-muted);
+  vertical-align: middle;
 }
 
 .expected {
   font-weight: 900;
   font-size: 1.2rem;
   color: #5F7F6E;
+}
+
+.study-mode .expected {
+  display: none !important;
 }
 
 .set-title {
@@ -198,17 +266,40 @@ button:disabled {
 }
 
 /* Feedback */
-.feedback {
-  font-weight: 700;
+.prev-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-top: 10px;
+  min-height: 40px; /* Prevent layout shift when empty */
+}
+
+.feedback {
+  font-weight: 800;
+  font-size: 1.2rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease, background 0.3s ease;
+}
+
+.feedback:not(:empty) {
+  opacity: 1;
 }
 
 .ok {
-  color: #5F7F6E;
+  background: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid #bbf7d0;
 }
 
 .bad {
-  color: #7A3F3F;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border: 1px solid #fecaca;
 }
 
 /* Details/Summary */
@@ -217,64 +308,94 @@ details summary {
   font-weight: 650;
 }
 
-/* Checkboxes */
+/* Checkboxes - modernized chip look */
 .chk input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  border: 1px solid var(--border-soft);
-  border-radius: 4px;
-  background: #ffffff;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--text-muted);
+  border-radius: 6px;
+  background: var(--bg-card);
   position: relative;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chk input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 
 .chk input[type="checkbox"]:disabled {
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: 0.5;
+  background: #f1f5f9;
 }
 
 .chk input[type="checkbox"]:checked {
-  background: #ffffff;
-  border-color: #6D8196;
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
 }
 
 .chk input[type="checkbox"]:checked::after {
-  content: "✓";
+  content: "";
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
-  transform: translate(-50%, -58%);
-  font-size: 12px;
-  color: #6D8196;
-  font-weight: 600;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -50%) rotate(45deg);
 }
 
-/* Score Control */
+/* Score Control / Pills */
 .score-control {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 12px;
+  gap: 8px;
+  padding: 0 14px;
+  min-height: 40px;
   border-radius: 999px;
   background: var(--bg-card);
   color: var(--text-main);
-  font-weight: 650;
+  font-size: 0.95rem;
+  font-weight: 600;
   border: 1px solid var(--border-soft);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
-.score-control>button {
+.controls-container > .score-control {
+  flex: 1;
+  justify-content: center;
+}
+
+.score-control:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.score-control button {
   all: unset;
   cursor: pointer;
-  color: var(--accent-danger);
-  padding: 2px 6px;
+  color: var(--text-muted);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 999px;
+  font-size: 1rem;
   line-height: 1;
+  margin-left: -4px;
+  transition: background 0.2s, color 0.2s;
 }
 
 .score-control button:hover {
-  background: rgba(77, 23, 23, 0.12);
+  background: var(--danger-bg);
+  color: var(--danger-text);
 }
 
 /* Links */
@@ -466,3 +587,90 @@ details summary {
   border-top: 1px solid #ddd;
   margin: 6px 0;
 }
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+  .wrap {
+    padding: 10px;
+  }
+
+  .card {
+    padding: 14px;
+    margin: 8px 0;
+    border-radius: 12px;
+  }
+
+  .big {
+    font-size: 2.2rem;
+  }
+
+  .small {
+    font-size: 1.4rem;
+  }
+
+  .french {
+    font-size: 1.3rem;
+  }
+
+  /* Prevent text inputs from causing iOS auto-zoom by enforcing 16px */
+  input[type="number"],
+  input[type="text"],
+  select {
+    font-size: 16px;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  /* Provide a bit more room for comfortable tapping */
+  button {
+    font-size: 15px;
+    padding: 10px 14px;
+  }
+
+  /* Make row gap a little tighter if needed to fit components better on small screens */
+  .row {
+    gap: 8px;
+  }
+
+  /* Allow .no-wrap containers (like Check/Next with Answer) to drop below on mobile */
+  .row.no-wrap {
+    flex-wrap: wrap !important;
+  }
+
+  /* Input fields within wrapping rows take up the full width */
+  .row.no-wrap input[type="text"] {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  /* Buttons within wrapping rows stretch completely on mobile */
+  .row.no-wrap button {
+    flex: 1 1 100%;
+    margin-top: 4px;
+  }
+
+  /* Tappable areas logic for checkboxes and score pills */
+  .score-control {
+    padding: 8px 14px;
+  }
+
+  .chk input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+  }
+
+  .chk input[type="checkbox"]:checked::after {
+    font-size: 14px;
+    transform: translate(-50%, -54%);
+  }
+
+  /* Move the controls container to the bottom on mobile */
+  .controls-container {
+    order: 10 !important;
+    margin-top: 16px !important;
+    justify-content: flex-start !important;
+  }
+}
+
+

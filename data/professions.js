@@ -1,4 +1,4 @@
-{
+window.DATA_SET = {
     "id": "professions",
     "name": "Professions (nouns)",
     "name_ru": "Профессии (существительные)",
@@ -146,4 +146,4 @@
       }
     ]
   }
-  
+  ;

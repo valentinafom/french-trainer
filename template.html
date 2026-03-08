@@ -13,7 +13,6 @@
     <div class="wrap">
         <div class="navbar">
             <a href="index.html">Home</a>
-            <a href="french-numbers.html">Numbers</a>
             <div class="dropdown">
                 <button class="dropbtn">Other exercises</button>
                 <div class="dropdown-content">
@@ -52,6 +51,7 @@
                         </select>
                     </div>
                 </div>
+                <div id="mobileTopicAnchor" style="display: none; margin-top: 12px;"></div>
 
                 <!-- Forms filter box - only shown if supportsForms is true -->
                 <div id="formsBox" style="margin-top:12px;">
@@ -71,7 +71,7 @@
 
                     <div class="row" style="margin-top:10px;">
                         <label class="score-control chk" title="Singular">
-                            <input type="checkbox" id="qty_s" />
+                            <input type="checkbox" id="qty_s" checked />
                             Singular
                         </label>
 
@@ -84,52 +84,63 @@
                     <div class="tiny" style="margin-top:8px;" id="formsHint"></div>
                 </div>
 
+                <div class="row" style="margin-top:14px; flex-wrap:wrap; gap:8px;">
+                    <label class="score-control chk" title="Study mode - auto reveal answers">
+                        <input type="checkbox" id="study" />
+                        Study mode
+                    </label>
+                    <label class="score-control chk" title="Random order">
+                        <input type="checkbox" id="random" />
+                        Random
+                    </label>
+                    <label class="score-control chk" title="Speak slower">
+                        <input type="checkbox" id="slowSpeak" />
+                        Slow
+                    </label>
+                    <label class="score-control chk" title="Auto pronounce French">
+                        <input type="checkbox" id="pronounce" />
+                        Pronounce
+                    </label>
+                </div>
+
             </details>
         </div>
 
         <div class="card">
             <div class="set-title" id="setTitleFr"></div>
 
-            <div class="row" style="margin-top:12px;">
-                <div class="score-control" title="Press X to reset score">
+            <div class="row controls-container" style="margin-top:12px;">
+                <div class="score-control">
                     <span id="scorePill">Score: 0/0</span>
+                </div>
+                <div class="score-control" title="Press X to reset score">
+                    <span id="progressPill">Words: 0/0</span>
                     <button id="resetScoreBtn" type="button" aria-label="Reset score">✖</button>
                 </div>
-
-                <label class="score-control chk" title="Speak slower">
-                    <input type="checkbox" id="slowSpeak" />
-                    Slow
-                </label>
-
-                <label class="score-control chk" title="Study mode - auto reveal answers">
-                    <input type="checkbox" id="study" />
-                    Study mode
-                </label>
-
-                <label class="score-control chk" title="Auto pronounce French">
-                    <input type="checkbox" id="pronounce" />
-                    Pronounce
-                </label>
             </div>
 
             <div id="promptArea" style="margin-top: 14px;">
                 <div class="big" id="bigPrompt"></div>
-                <div class="small" id="smallPrompt"></div>
+                <div class="small" id="smallPrompt" style="margin-top: 12px;"></div>
             </div>
 
             <div class="row no-wrap" style="margin-top: 12px;">
                 <input id="answer" type="text" placeholder="Type your answer…" autocomplete="off" />
-                <button id="checkBtn" title="press (enter) to check / press (n) for new card" type="button">Check /
-                    Next</button>
+                <button id="checkBtn" title="press (enter) to check" type="button">Check</button>
+            </div>
+            <div class="prev-row" id="prevRow">
+                <div class="feedback" id="feedback"></div>
+                <div class="tiny" id="extra"></div>
             </div>
 
-            <div class="feedback" id="feedback"></div>
-            <div class="tiny" id="extra"></div>
-
-            <div class="row" style="margin-top:12px;">
-                <button class="secondary" id="revealBtn" title="press (r) to Reveal" type="button">Reveal</button>
+            <div class="button-row" style="margin-top:12px;">
                 <button class="secondary" id="speakBtn" title="press (s) to Pronounce" type="button">🔊 Listen</button>
+                <button class="secondary" id="prevBtn" title="press (p) for previous card" type="button">Previous</button>
+                <button class="secondary" id="revealBtn" title="press (r) to Reveal" type="button">Reveal</button>
+
             </div>
+
+
         </div>
 
         <div class="card" id="ruleCard" style="display:none;">

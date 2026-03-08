@@ -1,4 +1,4 @@
-{
+window.DATA_SET = {
     "id": "colours",
     "name": "Colours (adjectives)",
     "name_ru": "Цвета (прилагательные)",
@@ -161,4 +161,4 @@
       }
     ]
   }
-  
+  ;

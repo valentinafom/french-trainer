@@ -24,7 +24,7 @@ https://valentinafom.github.io/french-trainer/
 
 ---
 
-### Basic Vocabulary Trainer
+### Thematic Vocabulary Trainer
 - Topics include:
   - Days of the week
   - Months
