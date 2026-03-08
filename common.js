@@ -342,3 +342,24 @@ function setupMobileTopicMover() {
 
 document.addEventListener("DOMContentLoaded", setupMobileTopicMover);
 
+// -----------------------------
+// Mobile UI: Auto-scroll card to top when keyboard opens
+// -----------------------------
+function setupMobileAutoScroll() {
+    const answerInput = document.getElementById("answer");
+    if (!answerInput) return;
+
+    answerInput.addEventListener("focus", () => {
+        if (window.matchMedia("(max-width: 600px)").matches) {
+            // Delay slightly to allow the virtual keyboard to fully open
+            setTimeout(() => {
+                const titleEl = document.getElementById("setTitleFr") || answerInput.closest(".card");
+                if (titleEl) {
+                    titleEl.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }, 300);
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", setupMobileAutoScroll);

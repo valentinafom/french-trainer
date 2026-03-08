@@ -223,7 +223,8 @@ button:disabled {
 }
 
 #smallPrompt {
-  min-height: 32px; /* Prevent layout shift when empty */
+  min-height: 30px; /* Prevent layout shift when empty */
+  margin-bottom: 0;
 }
 
 .tiny {
